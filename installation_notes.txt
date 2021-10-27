@@ -1,0 +1,15 @@
+it yelled at me so I did 
+
+$ gem install bundler:2.0.0.pre.3
+
+then I ran 
+
+$ bundler _2.0.0.pre.3_
+
+finally
+
+$ bundler install
+
+to run
+
+$ rails server
