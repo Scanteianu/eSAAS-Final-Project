@@ -1,2 +1,11 @@
 <!--  This file is app/views/movies/index.html.erb -->
 <h2>hello world</h2>
+
+Cart name: <%= @currentCart[:name]%>
+<br>
+Cart payment options:
+<ul>
+<% @currentCart[:paymentOptions].each do |option| %>
+  <li><%= option %></li>
+<% end %>
+</ul>
