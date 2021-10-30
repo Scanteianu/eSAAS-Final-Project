@@ -11,6 +11,6 @@ class CreateFoodCarts < ActiveRecord::Migration
 
       t.timestamps null: false
     end
-    # add_foreign_key :food_carts, :users, column: :owner_id, primary_key: "email_id"
+    add_foreign_key :food_carts, :users
   end
 end

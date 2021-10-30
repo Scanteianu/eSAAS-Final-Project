@@ -8,8 +8,8 @@ class CreateReviews < ActiveRecord::Migration
 
       t.timestamps null: false
     end
-    # add_foreign_key :reviews, :users, column: :reviewer_id, primary_key: "email_id"
-    # add_foreign_key :reviews, :users, column: :cart_id, primary_key: "id"
+    add_foreign_key :reviews, :users
+    add_foreign_key :reviews, :food_carts
   end
   
 end
