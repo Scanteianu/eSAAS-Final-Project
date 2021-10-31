@@ -5,6 +5,7 @@ class CartsController < ApplicationController
     initialize_sample
   end
   def initialize_sample
+    #(By Ankita): delete this controller file/rename this file to FoodCartController to make it consistent with db
     aSampleCart= Hash.new
     aSampleCart[:name]="The Chicken Dudes"
     aSampleCart[:location]="some-google-token-or-other-stringified-thing"
