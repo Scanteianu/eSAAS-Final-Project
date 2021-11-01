@@ -8,3 +8,21 @@ rottenpotatoes/lib/tasks/
 rottenpotatoes/log/
 rottenpotatoes/tmp/
 rottenpotatoes/vendor/bundle
+
+# Ignore precompiled javascript packs
+/public/packs
+/public/packs-test
+/public/assets
+
+# Ignore all logfiles and tempfiles
+/node_modules
+/log/*.log
+/tmp
+.env
+
+/yarn-error.log
+yarn-debug.log*
+.yarn-integrity
+
+# Ignore bundler config.
+/.bundle

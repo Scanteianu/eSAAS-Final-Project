@@ -29,3 +29,6 @@ end
 gem 'sass-rails', '~> 5.0.3'
 gem 'uglifier', '>= 2.7.1'
 gem 'jquery-rails'
+gem 'jbuilder'
+gem 'webpacker'
+gem 'react-rails'

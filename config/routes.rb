@@ -3,7 +3,13 @@ Rails.application.routes.draw do
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  root 'carts#index'
+  root 'pages#index'
+
+  namespace :api do
+    resources :carts
+  end
+
+  get '*path', to: 'pages#index', via: :all
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
