@@ -9,7 +9,7 @@ Rails.application.routes.draw do
     resources :carts
   end
 
-  get '*path', to: 'pages#index', via: :all
+  match '*path', to: 'pages#index', via: :all
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
