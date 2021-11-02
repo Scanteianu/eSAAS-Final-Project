@@ -1,8 +1,8 @@
-it yelled at me so I did 
+it yelled at me so I did
 
 $ gem install bundler:2.0.0.pre.3
 
-then I ran 
+then I ran
 
 $ bundler _2.0.0.pre.3_
 
@@ -13,3 +13,13 @@ $ bundler install
 to run
 
 $ rails server
+
+to get the db up
+
+$bundle exec rake db:migrate
+$bundle exec rake db:seed
+
+
+to test
+
+$bundle exec cucumber
