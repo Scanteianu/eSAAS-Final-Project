@@ -51,10 +51,24 @@ class CartsController < ApplicationController
   end
 
   def add_review
-    redirect_to carts_path
+    review_hash = Hash.new
+    review_hash[:user_id] = 1
+    review_hash[:food_cart_id] = params[:id]
+    review_hash[:rating] = review_params[:rating]
+    review_hash[:review] = review_params[:review]
+    @review = Review.create!(review_hash)
+    redirect_to cart_path(@review.food_cart_id)
   end
 
   def listifyPaymentOptions(paymentOptStr)
     return paymentOptStr.split(", ")
+  end
+
+  private
+  # Making "internal" methods private is not required, but is a common practice.
+  # This helps make clear which methods respond to requests, and which ones do not.
+  def review_params
+    # params.require(:review).permit(:user_id, :cart_id, :rating, :review, :release_date)
+    params.require(:cart_review).permit(:review, :rating)
   end
 end
