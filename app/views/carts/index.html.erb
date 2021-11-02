@@ -1,11 +1,9 @@
 <!--  This file is app/views/movies/index.html.erb -->
-<h2>hello world</h2>
+<h2>Welcome to food trucker</h2>
 
-Cart name: <%= @currentCart[:name]%>
-<br>
-Cart payment options:
+Food Carts:
 <ul>
-<% @currentCart[:paymentOptions].each do |option| %>
-  <li><%= option %></li>
+<% @carts.each do |cart| %>
+  <li> <a href="/carts/cart/<%=cart.id%>"><%=cart.name %></a></li>
 <% end %>
 </ul>
