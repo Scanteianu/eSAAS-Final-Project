@@ -1,16 +1,26 @@
-.review-avatar {
+.review-heading {
+    margin-top: 1rem;
+}
+
+.reviewer-avatar {
     vertical-align: middle;
     width: 50px;
     height: 50px;
     border-radius: 50%;
     font-size: 24px;
-    color: #fff;
+    color: white;
     line-height: 50px;
     text-align: center;
     background: #accce6;
     display: inline-block;
 }
 
-.review-heading {
+.review-container {
     margin-top: 1rem;
+    margin-bottom: 1rem;
+    padding: 1.5rem;
+    background-color: #accce6;
+    border-radius: 18px;
+    border: 1px solid #a4cae9;
+    box-shadow: 5px 5px 2px 1px #accce6b7;
 }

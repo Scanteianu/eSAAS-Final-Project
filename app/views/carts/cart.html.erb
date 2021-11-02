@@ -16,20 +16,22 @@ Top rated food: <%= @currentCart[:topRatedFood] %>
 <h4 class="review-heading">Reviews</h4>
 <% @currentReviews.each do |review| %>
   <div>
-    <div class="review-avatar-container">
-      <span class="review-avatar"><%= review[:username][0] %></span>
+    <div class="reviewer-avatar-container">
+      <span class="reviewer-avatar"><%= review[:username][0] %></span>
       <span><%= review[:username] %></span>
     </div>
     <div>Rating: <%= review[:rating] %>/5</div>
     <p><%= review[:review] %></p>
   </div>
 <% end %>
-<%= form_tag cart_review_path(@currentCart), :class => 'form' do %>
-  <%= label :cart_review, :review, 'Write Review', :class => 'col-form-label' %>
-  <%= text_area :cart_review, :review, :class => 'form-control' %>
-  <%= label :cart_review, :rating, 'Rating', :class => 'col-form-label'  %>
-  <%= select :cart_review, :rating, [1,2,3,4,5], {}, {:class => 'form-control col-1'} %>
-  <br/>
-  <%= submit_tag 'Save Changes', :class => 'btn btn-primary' %>
-<% end %>
+<div class="review-container">
+  <%= form_tag cart_review_path(@currentCart), :class => 'form' do %>
+    <%= label :cart_review, :review, 'Write Review', :class => 'col-form-label' %>
+    <%= text_area :cart_review, :review, :class => 'form-control' %>
+    <%= label :cart_review, :rating, 'Rating', :class => 'col-form-label'  %>
+    <%= select :cart_review, :rating, [1,2,3,4,5], {}, {:class => 'form-control col-1'} %>
+    <br/>
+    <%= submit_tag 'Save Changes', :class => 'btn btn-primary' %>
+  <% end %>
+</div>
 
