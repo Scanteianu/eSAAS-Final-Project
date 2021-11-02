@@ -2,6 +2,7 @@ source 'https://rubygems.org'
 
 ruby '>= 2.6.6', '< 2.7.0'
 gem 'rails', '4.2.10'
+gem 'pg'
 
 # for Heroku deployment
 group :development, :test do
@@ -20,7 +21,7 @@ group :test do
   gem 'simplecov', :require => false
 end
 group :production do
-  gem 'pg'
+
 end
 
 # Gems used only for assets and not required
