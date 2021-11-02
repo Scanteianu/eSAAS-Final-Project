@@ -14,16 +14,18 @@ Owner: <%= @currentCart[:owner] %>
 Top rated food: <%= @currentCart[:topRatedFood] %>
 <br>
 <h4 class="review-heading">Reviews</h4>
-<% @currentReviews.each do |review| %>
-  <div>
-    <div class="reviewer-avatar-container">
-      <span class="reviewer-avatar"><%= review[:username][0] %></span>
-      <span><%= review[:username] %></span>
+<div class="list-of-reviews">
+  <% @currentReviews.each do |review| %>
+    <div>
+      <div class="reviewer-avatar-container">
+        <span class="reviewer-avatar"><%= review[:username][0] %></span>
+        <span><%= review[:username] %></span>
+      </div>
+      <div>Rating: <%= review[:rating] %>/5</div>
+      <p><%= review[:review] %></p>
     </div>
-    <div>Rating: <%= review[:rating] %>/5</div>
-    <p><%= review[:review] %></p>
-  </div>
-<% end %>
+  <% end %>
+</div>
 <div class="review-container">
   <%= form_tag cart_review_path(@currentCart), :class => 'form' do %>
     <%= label :cart_review, :review, 'Write Review', :class => 'col-form-label' %>
