@@ -6,15 +6,12 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from '../components/App';
 import { BrowserRouter as Router, Route } from 'react-router-dom';
-import { ChakraProvider } from '@chakra-ui/react'
 
 document.addEventListener('DOMContentLoaded', () => {
   ReactDOM.render(
-      <ChakraProvider>
         <Router>
           <Route path="/" component={App} />
-        </Router>
-      </ChakraProvider>,
-    document.body.appendChild(document.createElement('div')),
+        </Router>,
+    document.body.appendChild(document.createElement('div'))
   )
 })

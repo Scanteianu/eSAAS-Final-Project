@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Heading, List, ListItem, ListIcon } from "@chakra-ui/react"
-import { MdPayment } from 'react-icons/md'
-import { GoLocation } from 'react-icons/go' 
+import PaymentIcon from '@mui/icons-material/Payment';
+import LocationOn from '@mui/icons-material/LocationOn';
+import { Container } from '@mui/material';
+import MuiSVGText from '../MuiSVGText';
 import CartReview from '../Reviews/CartReview';
 
 const Cart = () => {
@@ -19,18 +20,10 @@ const Cart = () => {
     const [localCartData, setLocalCartData] = useState({});
 
     return <Container>
-        <Heading as="h1">{localCartData.name}</Heading>
-        <List>
-            <ListItem>
-                <ListIcon as={GoLocation} />
-                {localCartData.location}
-            </ListItem>
-            {localCartData.paymentOptions && <ListItem>
-                <ListIcon as={MdPayment} />
-                {localCartData.paymentOptions.join(', ')}
-            </ListItem>}
-        </List>
-        <Heading as="h3" size="md" marginTop="1rem">Reviews</Heading>
+        <h1>{localCartData.name}</h1>
+        <MuiSVGText SvgComponent={<LocationOn />} text={localCartData.location} />
+        {localCartData.paymentOptions && <MuiSVGText SvgComponent={<PaymentIcon />} text={localCartData.paymentOptions.join(', ')} />}
+        <h3 style={{'marginTop': '1rem'}}>Reviews</h3>
         {
             localCartData.reviews 
                 ? localCartData.reviews.map(review => <CartReview key={review.name} reviewInfo={review} />)

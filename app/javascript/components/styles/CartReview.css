@@ -2,6 +2,11 @@
     margin-top: 1rem;
 }
 
+.review-user {
+    display: flex;
+    align-items: center;
+}
+
 .user-name {
     padding-left: 5px;
 }
