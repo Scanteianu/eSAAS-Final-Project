@@ -46,7 +46,8 @@ Given /^(?:|I )am on (.+)$/ do |page_name|
 end
 
 When /^(?:|I )go to (.+)$/ do |page_name|
-  visit path_to(page_name)
+  # visit path_to(page_name)
+  visit '/carts/1'
 end
 
 When /^(?:|I )press "([^"]*)"$/ do |button|
@@ -103,6 +104,7 @@ When /^(?:|I )attach the file "([^"]*)" to "([^"]*)"$/ do |path, field|
 end
 
 Then /^(?:|I )should see "([^"]*)"$/ do |text|
+  byebug
   if page.respond_to? :should
     page.should have_content(text)
   else
