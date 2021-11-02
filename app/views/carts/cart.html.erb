@@ -1,13 +1,27 @@
-Cart name: <%= @currentCart[:name]%>
+<% content_for :cart do %>
+  <link rel="stylesheet" href="../../assets/stylesheets/cart.css">
+<% end %>
+<h2><%= @currentCart[:name]%></h2>
 <br>
 Cart payment options:
-
-<br>
-Cart owner: <%= @currentCart[:owner] %>
-<br>
-Cart foods: <%= @currentCart[:topRatedFood] %>
 <ul>
 <% @currentCart[:paymentOptions].each do |option| %>
   <li><%= option %></li>
 <% end %>
 </ul>
+Cart owner: <%= @currentCart[:owner] %>
+<br>
+Cart foods: <%= @currentCart[:topRatedFood] %>
+<br>
+<h3>Reviews</h3>
+<% @currentReviews.each do |review| %>
+  <div>
+    <div class="review-avatar-container">
+      <span class="review-avatar"><%= review[:username][0] %></span>
+      <span><%= review[:username] %></span>
+    </div>
+    <div>Rating: <%= review[:rating] %></div>
+    <p><%= review[:review] %></p>
+  </div>
+<% end %>
+

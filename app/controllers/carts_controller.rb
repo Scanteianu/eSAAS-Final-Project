@@ -19,6 +19,21 @@ class CartsController < ApplicationController
     cartToDisplay[:topRatedFood]= cartFromDb.top_rated_food
     cartToDisplay[:hours]= [cartFromDb.opening_time,cartFromDb.closing_time]
     @currentCart=cartToDisplay
+
+    # Get reviews
+    reviewsToDisplay = Array.new
+    fetchedReviews = Review.where(:food_cart_id => index)
+    for review in fetchedReviews
+      reviewHash = Hash.new
+      reviewHash[:username] = User.find_by_id(review.user_id).name
+      reviewHash[:rating] = review.rating
+      reviewHash[:review] = review.review
+      reviewHash[:createdAt] = review.created_at
+      reviewHash[:updatedAt] = review.updated_at
+      reviewsToDisplay.push(reviewHash)
+    end
+    @currentReviews = reviewsToDisplay
+
   end
   def initialize_sample
     #(By Ankita): delete this controller file/rename this file to FoodCartController to make it consistent with db
