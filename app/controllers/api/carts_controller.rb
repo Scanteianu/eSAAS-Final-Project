@@ -15,5 +15,9 @@ module Api
   
       render json: @currentCart, status: 200
     end
+
+    def show
+      initialize_sample
+    end
   end
 end
