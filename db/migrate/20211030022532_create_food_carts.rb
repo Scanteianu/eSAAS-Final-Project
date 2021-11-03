@@ -3,7 +3,7 @@ class CreateFoodCarts < ActiveRecord::Migration
     create_table :food_carts do |t|
       t.string :name
       t.string :location
-      t.string :user_id, foreign_key: true
+      t.integer :user_id, foreign_key: true
       t.datetime :opening_time
       t.datetime :closing_time
       t.string :payment_options

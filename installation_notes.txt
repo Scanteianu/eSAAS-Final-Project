@@ -23,3 +23,14 @@ $bundle exec rake db:seed
 to test
 
 $bundle exec cucumber
+
+
+to deploy to heroku:
+
+1) create a project
+heroku create food-trucker-your-postfix
+2) be on branch main
+3) git push heroku main
+4) heroku run rake db:migrate
+5) heroku run rake db:seed
+6) heroku restart
