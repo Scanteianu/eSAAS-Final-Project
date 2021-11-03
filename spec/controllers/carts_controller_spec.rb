@@ -1,7 +1,10 @@
 require "rails_helper"
 # https://relishapp.com/rspec/rspec-rails/docs/controller-specs
 
-RSpec.configure {|c| c.before { expect(controller).not_to be_nil }}
+# RSpec.configure {|c| c.before { expect(controller).not_to be_nil }}
+# RSpec.configure do |config|
+#   config.infer_spec_type_from_file_location!
+# end
 describe CartsController, type: :controller do
   describe "loads from db" do
     it "loads a cart from db" do
@@ -14,6 +17,26 @@ describe CartsController, type: :controller do
       expect(cart[:name]).to eq("the chicken dudes")
       expect(cart[:topRatedFood]).to eq("chicken over rice")
       expect(cart[:paymentOptions]).to eq(["cash","card"])
+    end
+  end
+
+  describe "index" do
+    it "should assign the carts variable" do
+      FoodCart.create()
+      
+      controller.index
+
+      expect(controller.instance_variable_get(:@carts)).to eq(FoodCart.all)
+    end
+  end
+
+  describe "add_review" do
+    it "should create the review successfully" do
+      
+    end
+
+    it "should redirect to the cart path" do
+
     end
   end
 end

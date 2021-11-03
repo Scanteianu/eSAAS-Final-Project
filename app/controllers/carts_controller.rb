@@ -28,14 +28,14 @@ class CartsController < ApplicationController
 
     # Get reviews
     reviewsToDisplay = Array.new
-    fetchedReviews = Review.where(:food_cart_id => index)
+    fetchedReviews = FoodCart.get_all_reviews(index)
     for review in fetchedReviews
       reviewHash = Hash.new
-      reviewHash[:username] = User.find_by_id(review.user_id).name
-      reviewHash[:rating] = review.rating
-      reviewHash[:review] = review.review
-      reviewHash[:createdAt] = review.created_at
-      reviewHash[:updatedAt] = review.updated_at
+      reviewHash[:username] = User.find_by_id(review.user_id)[:name]
+      reviewHash[:rating] = review[:rating]
+      reviewHash[:review] = review[:review]
+      reviewHash[:createdAt] = review[:created_at]
+      reviewHash[:updatedAt] = review[:updated_at]
       reviewsToDisplay.push(reviewHash)
     end
     @currentReviews = reviewsToDisplay

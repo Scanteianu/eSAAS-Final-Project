@@ -4,7 +4,6 @@ class FoodCart < ActiveRecord::Base
     @allowed_payment_options = ["cash", "card", "venmo"]
 
     def self.get_all_reviews(food_cart_id)
-        food_cart = FoodCart.find(food_cart_id)
-        food_cart.reviews
+        Review.where(:food_cart_id => food_cart_id)
     end
 end
