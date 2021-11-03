@@ -10,8 +10,7 @@ class User < ActiveRecord::Base
 
     def self.reviews_by_me(user_id)
         #TODO for ankita: implement argument sanity check
-        user = User.find(user_id)
-        user.reviews
+        Review.where(:user_id => user_id)
     end
 
     def self.delete_review(review_id)

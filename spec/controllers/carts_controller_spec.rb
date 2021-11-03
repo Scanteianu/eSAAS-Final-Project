@@ -1,7 +1,10 @@
 require "rails_helper"
 # https://relishapp.com/rspec/rspec-rails/docs/controller-specs
 
-RSpec.configure {|c| c.before { expect(controller).not_to be_nil }}
+# RSpec.configure {|c| c.before { expect(controller).not_to be_nil }}
+# RSpec.configure do |config|
+#   config.infer_spec_type_from_file_location!
+# end
 describe CartsController, type: :controller do
   describe "loads from db" do
     it "loads a cart from db" do
