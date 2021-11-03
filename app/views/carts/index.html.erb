@@ -1,9 +1,26 @@
 <!--  This file is app/views/movies/index.html.erb -->
-<h2>Welcome to food trucker</h2>
+<h2>Food Carts</h2>
 
-Food Carts:
-<ul>
-<% @carts.each do |cart| %>
-  <li> <a href="/carts/cart/<%=cart.id%>"><%=cart.name %></a></li>
-<% end %>
-</ul>
+<div class="row">
+  <% @carts.each do |cart| %>
+    <div class="col-sm-6">
+      <div class="card" style="width: 18rem;">
+        <div class="card-body">
+          <h5 class="card-title"><%=cart.name %></h5>
+          <h6 class="card-subtitle mb-2 text-muted"><%= cart.location%></h6>
+        </div>
+        <ul class="list-group list-group-flush">
+          <li class="list-group-item">Payment Options: <%= cart.payment_options %></li>
+          <li class="list-group-item">
+            Opens: <%= Time.parse(cart.opening_time.to_s()).in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p") %> 
+            and Closes: <%= Time.parse(cart.closing_time.to_s()).in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p") %>
+          </li>
+          <li class="list-group-item">Top Rated Food: <%= cart.top_rated_food %></li>
+        </ul>
+        <div class="card-body">
+          <a href="/carts/cart/<%=cart.id%>" class="card-link">View more</a>
+        </div>
+      </div>
+    </div>
+  <% end %>
+</div>
