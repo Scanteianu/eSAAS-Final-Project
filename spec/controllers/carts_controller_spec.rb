@@ -19,4 +19,24 @@ describe CartsController, type: :controller do
       expect(cart[:paymentOptions]).to eq(["cash","card"])
     end
   end
+
+  describe "index" do
+    it "should assign the carts variable" do
+      FoodCart.create()
+      
+      controller.index
+
+      expect(controller.instance_variable_get(:@carts)).to eq(FoodCart.all)
+    end
+  end
+
+  describe "add_review" do
+    it "should create the review successfully" do
+      
+    end
+
+    it "should redirect to the cart path" do
+
+    end
+  end
 end
