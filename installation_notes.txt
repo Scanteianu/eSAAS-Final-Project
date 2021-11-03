@@ -23,6 +23,7 @@ $bundle exec rake db:seed
 to test
 
 $bundle exec cucumber
+$bundle exec rspec
 
 
 to deploy to heroku:
