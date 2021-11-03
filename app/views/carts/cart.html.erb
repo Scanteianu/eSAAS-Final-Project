@@ -3,6 +3,12 @@
 <% end %>
 <h2><%= @currentCart[:name]%></h2>
 <br>
+Location: <%= @currentCart[:location]%>
+<br>
+Opens: <%= @currentCart[:openHours]%>
+<br>
+Closes: <%= @currentCart[:closeHours]%>
+<br>
 Payment options:
 <ul>
 <% @currentCart[:paymentOptions].each do |option| %>

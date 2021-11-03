@@ -7,8 +7,8 @@ Feature: view cart details
   Background: carts in database
 
     Given the following carts exist:
-      | name              | user_id | location  | opening_time | closing_time | payment_options | top_rated_food      |
-      | The Chicken Dudes | 1       | location1 | '9:30:00'    | '18:00:00'   | 'cash, venmo'   | 'chicken over rice' |
+      | name              | user_id | location  | opening_time        | closing_time        | payment_options | top_rated_food      |
+      | The Chicken Dudes | 1       | location1 | 2021-11-02 13:30:00 | 2021-11-02 24:00:00 | 'cash, venmo'   | 'chicken over rice' |
 
     And the following users exist:
       | email_id               | name       |
@@ -18,6 +18,15 @@ Feature: view cart details
     And the following reviews exist:
       | food_cart_id | user_id | rating | review               |
       | 1            | 2       | 3      | the food was alright |
+
+  Scenario: view a cart's location
+    When I go to the view page for "The Chicken Dudes"
+    Then I should see "location1"
+
+  Scenario: view a cart's open and close hours
+    When I go to the view page for "The Chicken Dudes"
+    Then I should see "09:30AM"
+    And I should see "08:00PM"
 
   Scenario: view a cart's payment options
     When I go to the view page for "The Chicken Dudes"

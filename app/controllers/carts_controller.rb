@@ -17,7 +17,12 @@ class CartsController < ApplicationController
     cartToDisplay[:owner] = User.find_by_id(cartFromDb.user_id).name
     cartToDisplay[:paymentOptions] = listifyPaymentOptions(cartFromDb.payment_options)
     cartToDisplay[:topRatedFood]= cartFromDb.top_rated_food
-    cartToDisplay[:hours]= [cartFromDb.opening_time,cartFromDb.closing_time]
+
+    # Convert UTC time to eastern time
+    parsed_open_time = Time.parse(cartFromDb.opening_time.to_s())
+    parsed_close_time = Time.parse(cartFromDb.closing_time.to_s())
+    cartToDisplay[:openHours] = parsed_open_time.in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p")
+    cartToDisplay[:closeHours] = parsed_close_time.in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p")
     @currentCart=cartToDisplay
 
     # Get reviews
