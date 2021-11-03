@@ -8,19 +8,20 @@ class CartsController < ApplicationController
   def cart
     getCartFromDb(params[:id])
   end
+  attr_accessor :currentCart
   def getCartFromDb(index)
     cartFromDb = FoodCart.find_by_id(index)
     cartToDisplay = Hash.new
 
-    cartToDisplay[:name] = cartFromDb.name
-    cartToDisplay[:location] = cartFromDb.location
-    cartToDisplay[:owner] = User.find_by_id(cartFromDb.user_id).name
-    cartToDisplay[:paymentOptions] = listifyPaymentOptions(cartFromDb.payment_options)
-    cartToDisplay[:topRatedFood]= cartFromDb.top_rated_food
+    cartToDisplay[:name] = cartFromDb[:name]
+    cartToDisplay[:location] = cartFromDb[:location]
+    cartToDisplay[:owner] = User.find_by_id(cartFromDb[:user_id])[:name]
+    cartToDisplay[:paymentOptions] = listifyPaymentOptions(cartFromDb[:payment_options])
+    cartToDisplay[:topRatedFood]= cartFromDb[:top_rated_food]
 
     # Convert UTC time to eastern time
-    parsed_open_time = Time.parse(cartFromDb.opening_time.to_s())
-    parsed_close_time = Time.parse(cartFromDb.closing_time.to_s())
+    parsed_open_time = Time.parse(cartFromDb[:opening_time].to_s())
+    parsed_close_time = Time.parse(cartFromDb[:closing_time].to_s())
     cartToDisplay[:openHours] = parsed_open_time.in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p")
     cartToDisplay[:closeHours] = parsed_close_time.in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p")
     @currentCart=cartToDisplay
