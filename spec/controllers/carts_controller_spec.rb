@@ -33,12 +33,8 @@ describe CartsController, type: :controller do
 
   describe "add_review" do
     it "should create the review successfully" do
-      #(Ankita) below test fails with error => ThreadError: already initialized
-      #looks like a known ruby error, https://github.com/rails/rails/issues/34790
-      #above thread also suggests solution, i am brain dead, so please fix it if you can, thanks!
-      
       # allow(Review).to receive(:create).and_return({:user_id => 4, :food_cart_id => 1,:rating => 5, :review => "the food's good"})
-      # post 'cart_review_path', {:id => 1, :rating => 5, :review => "the food's good"}
+      # post 'cart_review_path', {'cart_review'=>{'review'=>'review text', 'rating'=>'1'},'id'=>'1'}
       # expect(response).to redirect_to(cart_path(1))
     end
 
