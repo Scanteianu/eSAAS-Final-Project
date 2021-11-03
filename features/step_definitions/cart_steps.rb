@@ -26,3 +26,9 @@ Then /I should see the user review for "(.*)"/ do |username|
   expect(review_text).to include("#{found_review.rating}/5")
   expect(review_text).to include(found_review.review)
 end
+
+When /I view more for "(.*)"/ do |food_cart_name|
+  found_food_cart = FoodCart.find_by(name: food_cart_name)
+  view_more_food_cart_link = page.find("a[href='/carts/cart/#{found_food_cart.id}']")
+  view_more_food_cart_link.click
+end
