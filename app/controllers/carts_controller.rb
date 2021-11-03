@@ -20,20 +20,6 @@ class CartsController < ApplicationController
     cartToDisplay[:hours]= [cartFromDb.opening_time,cartFromDb.closing_time]
     @currentCart=cartToDisplay
   end
-  def initialize_sample
-    #(By Ankita): delete this controller file/rename this file to FoodCartController to make it consistent with db
-    #(dan): let's leave the name, it should be ok to have the inconsistency, and we'd have to update things like
-    #the routes
-    aSampleCart= Hash.new
-    aSampleCart[:name]="The Chicken Dudes"
-    aSampleCart[:location]="some-google-token-or-other-stringified-thing"
-    aSampleCart[:paymentOptions]=["Venmo","Cash"]
-    aSampleCart[:reviews]=[{:user=>"DanScan", :star_rating=>3, :text=>"food was meh"}]
-
-
-
-
-  end
 
   def add_review
     redirect_to carts_path
