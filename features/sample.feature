@@ -46,3 +46,8 @@ Scenario: view a cart's owner
 Scenario: see all the carts
   When I go to the home page
   Then I should see "The Chicken Dudes"
+
+Scenario: navigate to a cart's page
+  When I go to the home page
+  And I follow "The Chicken Dudes"
+  Then I should be on the view page for "The Chicken Dudes"
