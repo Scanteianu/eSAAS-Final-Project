@@ -31,7 +31,7 @@ class CartsController < ApplicationController
     fetchedReviews = FoodCart.get_all_reviews(index)
     for review in fetchedReviews
       reviewHash = Hash.new
-      reviewHash[:username] = User.find_by_id(review.user_id)[:name]
+      reviewHash[:username] = User.find_by_id(review[:user_id])[:name]
       reviewHash[:rating] = review[:rating]
       reviewHash[:review] = review[:review]
       reviewHash[:createdAt] = review[:created_at]
