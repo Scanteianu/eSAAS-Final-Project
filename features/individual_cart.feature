@@ -53,5 +53,5 @@ Feature: view cart details
 
   Scenario: navigate to a cart's page
     When I go to the home page
-    And I follow "The Chicken Dudes"
+    And I view more for "The Chicken Dudes"
     Then I should be on the view page for "The Chicken Dudes"
