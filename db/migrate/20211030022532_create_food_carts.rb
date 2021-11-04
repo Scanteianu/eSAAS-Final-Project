@@ -1,4 +1,4 @@
-class CreateFoodCarts < ActiveRecord::Migration
+class CreateFoodCarts < ActiveRecord::Migration[5.2]
   def change
     create_table :food_carts do |t|
       t.string :name
