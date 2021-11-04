@@ -31,12 +31,35 @@ describe CartsController, type: :controller do
   end
 
   describe "add_review" do
+    before(:each) do
+      default_opening_time = DateTime.parse('9:30:00').strftime("%I:%M %p")
+      default_closing_time = DateTime.parse('18:00:00').strftime("%I:%M %p")
+      owner_user = User.create()
+      @test_food_cart = FoodCart.create!({
+        :name => 'the halal guys',
+        :user_id => owner_user[:id],
+        :location => 'location2',
+        :opening_time => default_opening_time,
+        :closing_time => default_closing_time,
+        :payment_options => 'cash, card, venmo',
+        :top_rated_food => 'chicken over rice'
+      })
+      @test_user = User.create!(:name => 'testuser', :email_id => 'test@columbia.edu')
+    end
+
     it "should create the review successfully" do
-      
+      # food cart id must match one currently in DB 
+      post :add_review, params: { id: 1, cart_review: { review: 'review text', rating: 1 } }
+
+      # current user id param is hardcoded in controller and should be dynamic after adding user auth
+      fetched_review = Review.find_by(:food_cart_id => @test_food_cart[:id], :user_id => 1)
+      expect(@controller.instance_variable_get(:@review)).to eq(fetched_review)
     end
 
     it "should redirect to the cart path" do
-
+      post :add_review, params: { id: 1, cart_review: { review: 'review text', rating: 1 } }
+  
+      expect(response).to redirect_to(cart_path(1))
     end
   end
 end

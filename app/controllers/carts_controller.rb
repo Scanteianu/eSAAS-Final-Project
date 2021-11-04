@@ -49,7 +49,7 @@ class CartsController < ApplicationController
     review_hash[:rating] = review_params[:rating]
     review_hash[:review] = review_params[:review]
     @review = Review.create!(review_hash)
-    redirect_to cart_path(@review.food_cart_id)
+    redirect_to cart_path(@review[:food_cart_id])
   end
 
   def listifyPaymentOptions(paymentOptStr)
