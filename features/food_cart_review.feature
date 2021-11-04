@@ -21,7 +21,7 @@ Feature: view cart list
             | 1            | 3       | 3      | the food was alright             |
             | 1            | 3       | 5      | The carne asada was super tender |
 
-    Scenario: view all carts
+    Scenario: Write a review for a food cart
         Given I am on the home page
         When I view more for "The Chicken Dudes"
         And I fill in "cart_review[review]" with "I love the chicken over rice"
