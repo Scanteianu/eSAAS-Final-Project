@@ -30,6 +30,49 @@ describe CartsController, type: :controller do
     end
   end
 
+  describe "cart" do
+    before(:each) do
+      @owner_user = User.create!(:name => 'owner', :email_id => 'owneremail@gmail.com')
+      @test_user = User.create!(:email_id => 'test@columbia.edu', :name => 'test user')
+      @test_user2 = User.create!(:email_id => 'test2@columbia.edu', :name => 'test user 2')
+      default_opening_time = DateTime.parse('9:30:00').strftime("%I:%M %p")
+      default_closing_time = DateTime.parse('18:00:00').strftime("%I:%M %p")
+      @test_food_cart = FoodCart.create!({
+        :name => 'the halal guys',
+        :user_id => @owner_user[:id],
+        :location => 'location2',
+        :opening_time => default_opening_time,
+        :closing_time => default_closing_time,
+        :payment_options => 'cash, card, venmo',
+        :top_rated_food => 'chicken over rice'
+      })
+      @review = Review.create!(:user_id => @test_user[:id], :food_cart_id => @test_food_cart[:id], :rating => 3, :review => 'Not bad')
+    end
+
+    it "should assign current cart variable" do
+      expected_cart = Hash.new
+      expected_cart[:name] = @test_food_cart[:name]
+      expected_cart[:location] = @test_food_cart[:location]
+      expected_cart[:owner] = @owner_user[:name]
+      expected_cart[:paymentOptions] = @test_food_cart[:payment_options].split(", ")
+      expected_cart[:topRatedFood] = @test_food_cart[:top_rated_food]
+      expected_cart[:openHours] = "05:30AM"
+      expected_cart[:closeHours] = "02:00PM"
+      
+      get :cart, params: { id: @test_food_cart[:id] }
+
+      expect(@controller.instance_variable_get(:@currentCart)).to eq(expected_cart)
+    end
+
+    it "should assign current reviews variable" do
+      get :cart, params: { id: @test_food_cart[:id] }
+
+      expect(@controller.instance_variable_get(:@currentReviews)[0][:username]).to eq(@test_user[:name])
+      expect(@controller.instance_variable_get(:@currentReviews)[0][:rating]).to eq(@review[:rating])
+      expect(@controller.instance_variable_get(:@currentReviews)[0][:review]).to eq(@review[:review])
+    end
+  end
+
   describe "add_review" do
     before(:each) do
       default_opening_time = DateTime.parse('9:30:00').strftime("%I:%M %p")
