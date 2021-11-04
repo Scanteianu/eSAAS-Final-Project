@@ -9,7 +9,7 @@ group :development, :test do
   gem 'sqlite3', '1.3.11'
   gem 'byebug'
   gem 'database_cleaner'
-  gem 'capybara', '2.4.4'
+  gem 'capybara', '~> 2.8'
   gem 'launchy'
   gem 'rspec-rails', '3.7.2'
   gem 'ZenTest', '4.11.2'
