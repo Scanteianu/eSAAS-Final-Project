@@ -14,7 +14,7 @@ module NavigationHelpers
     case page_name
 
     # when /^the (RottenPotatoes )?home\s?page$/ then '/movies'
-  when /^the view page for "(.*)"$/ then '/carts/cart/'+FoodCart.find_by_name(($1)).id.to_s #todo - append a findbyname and id like below
+  when /^the view page for "(.*)"$/ then '/carts/cart/'+FoodCart.find_by_name(($1))[:id].to_s #todo - append a findbyname and id like below
     # when /^the edit page for "(.*)"/ then '/movies/'+Movie.find_by_title(($1)).id.to_s+"/edit"
     # when /^the details page for "(.*)"/ then '/movies/'+Movie.find_by_title(($1)).id.to_s
     # when /^the Similar Movies page for "(.*)"/ then '/movies/'+Movie.find_by_title(($1)).id.to_s+"/samedirector"

@@ -6,14 +6,14 @@ Feature: view cart details
 
   Background: carts in database
 
-    Given the following carts exist:
-      | name              | user_id | location  | opening_time        | closing_time        | payment_options | top_rated_food      |
-      | The Chicken Dudes | 1       | location1 | 2021-11-02 13:30:00 | 2021-11-02 24:00:00 | 'cash, venmo'   | 'chicken over rice' |
-
-    And the following users exist:
+    Given the following users exist:
       | email_id               | name       |
       | owner_person@gmail.com | owner user |
       | test1@columbia.edu     | test1      |
+
+    And the following carts exist:
+      | name              | user_id | location  | opening_time        | closing_time        | payment_options | top_rated_food      |
+      | The Chicken Dudes | 1       | location1 | 2021-11-02 13:30:00 | 2021-11-02 24:00:00 | 'cash, venmo'   | 'chicken over rice' |
 
     And the following reviews exist:
       | food_cart_id | user_id | rating | review               |
