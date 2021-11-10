@@ -2,7 +2,6 @@
 <%= javascript_include_tag "carts" %>
 <link rel="stylesheet" href="../../assets/stylesheets/cart.css">
 
-
 <h2>Food Carts</h2>
 <div class="row">
   <div class="col-md-5">
@@ -11,24 +10,25 @@
   <div class="col-md-7">
     <div class="d-flex flex-wrap align-content-center justify-content-center">
       <% @carts.each do |cart| %>
-          <div id="<%=cart.name%>" class="card m-2" style="width: 18rem;">
+          <div id="<%=cart[:name]%>" class="card m-2" style="width: 18rem;" data-cart="<%= cart.to_json %>">
             <div class="card-body">
-              <h5 class="card-title"><%=cart.name %></h5>
-              <h6 class="card-subtitle mb-2 text-muted"><%= cart.location%></h6>
+              <h5 class="card-title"><%=cart[:name] %></h5>
+              <h6 class="card-subtitle mb-2 text-muted"><%= cart[:location]%></h6>
             </div>
             <ul class="list-group list-group-flush">
-              <li class="list-group-item">Payment Options: <%= cart.payment_options %></li>
+              <li class="list-group-item">Payment Options: <%= cart[:payment_options] %></li>
               <li class="list-group-item">
-                Opens: <%= Time.parse(cart.opening_time.to_s()).in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p") %> 
-                and Closes: <%= Time.parse(cart.closing_time.to_s()).in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p") %>
+                Opens: <%= Time.parse(cart[:opening_time].to_s()).in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p") %> 
+                and Closes: <%= Time.parse(cart[:closing_time].to_s()).in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p") %>
               </li>
-              <li class="list-group-item">Top Rated Food: <%= cart.top_rated_food %></li>
+              <li class="list-group-item">Top Rated Food: <%= cart[:top_rated_food] %></li>
             </ul>
             <div class="card-body">
-              <a href="/carts/cart/<%=cart.id%>" class="card-link">View more</a>
+              <a href="/carts/cart/<%=cart[:id]%>" class="card-link">View more</a>
             </div>
           </div>
       <% end %>
     </div>
   </div>
 </div>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDsr1LFNGK6fUYh-l88qOrqNHeUuF_xtiQ&callback=initMap" async defer></script>

@@ -1,7 +1,21 @@
 class CartsController < ApplicationController
 
   def index
-    @carts = FoodCart.all
+    cartsArray = Array.new
+    foodCarts = FoodCart.all
+    for foodCart in foodCarts
+      foodCartHash = Hash.new
+      foodCartHash[:id] = foodCart[:id]
+      foodCartHash[:name] = foodCart[:name]
+      foodCartHash[:location] = foodCart[:location]
+      foodCartHash[:opening_time] = foodCart[:opening_time]
+      foodCartHash[:closing_time] = foodCart[:closing_time]
+      foodCartHash[:payment_options] = foodCart[:payment_options]
+      foodCartHash[:top_rated_food] = foodCart[:top_rated_food]
+      foodCartHash[:coordinates] = foodCart[:coordinates]
+      cartsArray.push(foodCartHash)
+    end
+    @carts = cartsArray
   end
 
 
@@ -15,6 +29,7 @@ class CartsController < ApplicationController
 
     cartToDisplay[:name] = cartFromDb[:name]
     cartToDisplay[:location] = cartFromDb[:location]
+    cartToDisplay[:coordinates] = cartFromDb[:coordinates]
     cartToDisplay[:owner] = User.find_by_id(cartFromDb[:user_id])[:name]
     cartToDisplay[:paymentOptions] = listifyPaymentOptions(cartFromDb[:payment_options])
     cartToDisplay[:topRatedFood]= cartFromDb[:top_rated_food]

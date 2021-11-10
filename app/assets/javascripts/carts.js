@@ -32,7 +32,26 @@ let highlightedFoodCardElem;
 const highlightedFoodCardClass = 'highlighted-food-cart-card';
 let sameMarkerClicked = false;
 
+
+// Gets Food Cart variable from controller passed as a data-cart HTML attribute
+// and converts to json object
+function getFoodCartDataFromDOM() {
+    const jsonCartArray = [];
+    cartElems = document.querySelectorAll('[data-cart]');
+    cartElems.forEach(cartElem => {
+        jsonCart = JSON.parse(cartElem.dataset.cart);
+        const coordinates = jsonCart.coordinates.split(',');
+        jsonCart.coordinates = { lat: parseFloat(coordinates[0]), lng: parseFloat(coordinates[1]) };
+        jsonCartArray.push(jsonCart);
+    });
+
+    return jsonCartArray;
+}
+
 function initMap() {
+    const foodCarts = getFoodCartDataFromDOM();
+    console.log(foodCarts);
+
     const map = new google.maps.Map(document.getElementById('map'), {
         center: columbiaUniversityLatLng,
         zoom: 15
@@ -42,11 +61,11 @@ function initMap() {
     const infoTooltipWindow = new google.maps.InfoWindow();
 
     // Create Food Cart markers on map
-    foodCartCoords.forEach(foodCartCoord => {
+    foodCarts.forEach(foodCart => {
         const marker = new google.maps.Marker({
-            position: foodCartCoord.position,
+            position: foodCart.coordinates,
             map,
-            title: foodCartCoord.name
+            title: foodCart.name
         });
 
         // Food Cart marker callback on click
