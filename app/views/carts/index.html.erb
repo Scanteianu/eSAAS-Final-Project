@@ -1,26 +1,34 @@
-<!--  This file is app/views/movies/index.html.erb -->
-<h2>Food Carts</h2>
+<!--  This file is app/views/carts/index.html.erb -->
+<%= javascript_include_tag "carts" %>
+<link rel="stylesheet" href="../../assets/stylesheets/cart.css">
 
+
+<h2>Food Carts</h2>
 <div class="row">
-  <% @carts.each do |cart| %>
-    <div class="col-sm-6">
-      <div class="card" style="width: 18rem;">
-        <div class="card-body">
-          <h5 class="card-title"><%=cart.name %></h5>
-          <h6 class="card-subtitle mb-2 text-muted"><%= cart.location%></h6>
-        </div>
-        <ul class="list-group list-group-flush">
-          <li class="list-group-item">Payment Options: <%= cart.payment_options %></li>
-          <li class="list-group-item">
-            Opens: <%= Time.parse(cart.opening_time.to_s()).in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p") %> 
-            and Closes: <%= Time.parse(cart.closing_time.to_s()).in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p") %>
-          </li>
-          <li class="list-group-item">Top Rated Food: <%= cart.top_rated_food %></li>
-        </ul>
-        <div class="card-body">
-          <a href="/carts/cart/<%=cart.id%>" class="card-link">View more</a>
-        </div>
-      </div>
+  <div class="col-5">
+    <div id="map"></div>
+  </div>
+  <div class="col-7">
+    <div class="d-flex flex-wrap">
+      <% @carts.each do |cart| %>
+          <div class="card m-2" style="width: 18rem;">
+            <div class="card-body">
+              <h5 class="card-title"><%=cart.name %></h5>
+              <h6 class="card-subtitle mb-2 text-muted"><%= cart.location%></h6>
+            </div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">Payment Options: <%= cart.payment_options %></li>
+              <li class="list-group-item">
+                Opens: <%= Time.parse(cart.opening_time.to_s()).in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p") %> 
+                and Closes: <%= Time.parse(cart.closing_time.to_s()).in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p") %>
+              </li>
+              <li class="list-group-item">Top Rated Food: <%= cart.top_rated_food %></li>
+            </ul>
+            <div class="card-body">
+              <a href="/carts/cart/<%=cart.id%>" class="card-link">View more</a>
+            </div>
+          </div>
+      <% end %>
     </div>
-  <% end %>
+  </div>
 </div>

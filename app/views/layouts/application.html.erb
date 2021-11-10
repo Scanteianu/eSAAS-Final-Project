@@ -13,15 +13,17 @@
     <nav class="navbar navbar-expand-lg bg-primary text-white mb-3">
       <h1 class="title">Food Trucker</h1>
     </nav>
-    <div class="container">
+    <div class="container-fluid">
       <%# Render "flash" messages in our application. This loads _flash.erb %>
       <%= render 'layouts/flash' %>
       <main id="main">
         <% if content_for?(:cart) %>
           <%= yield(:cart) %>
         <% end %>
+        
         <%= yield %>
       </main>
     </div>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDsr1LFNGK6fUYh-l88qOrqNHeUuF_xtiQ&callback=initMap" async defer></script>
   </body>
 </html>
