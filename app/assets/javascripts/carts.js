@@ -3,35 +3,10 @@ const columbiaUniversityLatLng = {
     lng: -73.96260488871613
 };
 
-const foodCartCoords = [
-    {
-        name: 'dumpling corner',
-        position: { 
-            lat: 40.80877070458994,
-            lng: -73.96310377081672
-        }
-    },
-    {
-        name: 'the halal guys',
-        position: {
-            lat: 40.80680499795128,
-            lng: -73.96078581662722
-        }
-    },
-    {
-        name: 'mexican cart',
-        position: {
-            lat: 40.80753715418158,
-            lng: -73.96469123200576
-        }
-    }
-]
-
 let highlightedFoodCartId = '';
 let highlightedFoodCardElem;
 const highlightedFoodCardClass = 'highlighted-food-cart-card';
 let sameMarkerClicked = false;
-
 
 // Gets Food Cart variable from controller passed as a data-cart HTML attribute
 // and converts to json object

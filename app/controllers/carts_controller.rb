@@ -8,8 +8,8 @@ class CartsController < ApplicationController
       foodCartHash[:id] = foodCart[:id]
       foodCartHash[:name] = foodCart[:name]
       foodCartHash[:location] = foodCart[:location]
-      foodCartHash[:opening_time] = foodCart[:opening_time]
-      foodCartHash[:closing_time] = foodCart[:closing_time]
+      foodCartHash[:opening_time] = Time.parse(foodCart[:opening_time].to_s()).in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p")
+      foodCartHash[:closing_time] = Time.parse(foodCart[:closing_time].to_s()).in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p")
       foodCartHash[:payment_options] = foodCart[:payment_options]
       foodCartHash[:top_rated_food] = foodCart[:top_rated_food]
       foodCartHash[:coordinates] = foodCart[:coordinates]

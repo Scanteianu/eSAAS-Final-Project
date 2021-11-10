@@ -25,8 +25,8 @@ Feature: view cart details
 
   Scenario: view a cart's open and close hours
     When I go to the view page for "The Chicken Dudes"
-    Then I should see "09:30AM"
-    And I should see "08:00PM"
+    Then I should see "08:30AM"
+    And I should see "07:00PM"
 
   Scenario: view a cart's payment options
     When I go to the view page for "The Chicken Dudes"
