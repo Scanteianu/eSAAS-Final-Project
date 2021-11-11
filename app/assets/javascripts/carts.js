@@ -27,7 +27,7 @@ function initMap() {
     const foodCarts = getFoodCartDataFromDOM();
     console.log(foodCarts);
 
-    const map = new google.maps.Map(document.getElementById('map'), {
+    const map = new google.maps.Map(document.getElementById('cart-list-gmap'), {
         center: columbiaUniversityLatLng,
         zoom: 15
     });

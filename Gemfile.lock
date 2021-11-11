@@ -58,6 +58,7 @@ GEM
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       xpath (~> 2.0)
+    cliver (0.3.2)
     concurrent-ruby (1.1.9)
     crass (1.0.6)
     cucumber (3.2.0)
@@ -130,6 +131,11 @@ GEM
       mini_portile2 (~> 2.6.1)
       racc (~> 1.4)
     pg (0.21.0)
+    phantomjs (2.1.1.0)
+    poltergeist (1.18.1)
+      capybara (>= 2.1, < 4)
+      cliver (~> 0.3.1)
+      websocket-driver (>= 0.2.0)
     public_suffix (4.0.6)
     racc (1.6.0)
     rack (2.2.3)
@@ -224,6 +230,7 @@ PLATFORMS
 DEPENDENCIES
   ZenTest (= 4.11.2)
   bootsnap
+  bundler (>= 1.30)
   byebug
   capybara (~> 2.8)
   cucumber-rails
@@ -233,6 +240,8 @@ DEPENDENCIES
   launchy
   listen
   pg (~> 0.18)
+  phantomjs
+  poltergeist
   rails (~> 5.2.0)
   rspec-rails (= 3.7.2)
   sass-rails (~> 5.0.3)
