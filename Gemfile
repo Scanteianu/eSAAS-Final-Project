@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 ruby '>= 2.6.6', '< 2.7.0'
 gem 'rails', '~> 5.2.0'
-gem 'pg', '~> 0.21.1'
+gem 'pg', '~> 0.18'
 
 # for Heroku deployment
 group :development, :test do
@@ -26,6 +26,7 @@ group :test do
 end
 group :production do
   gem 'bundler', '>= 1.30'
+  gem 'bootsnap'
 end
 
 # Gems used only for assets and not required
