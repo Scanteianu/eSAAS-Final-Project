@@ -10,7 +10,7 @@
   <div class="col-md-7">
     <div class="d-flex flex-wrap align-content-center justify-content-center">
       <% @carts.each do |cart| %>
-          <div id="<%=cart[:name]%>" class="card m-2" style="width: 18rem;" data-cart="<%= cart.to_json %>">
+          <div id="<%=cart[:name].split(' ').join('-')%>" class="card m-2" style="width: 18rem;" data-cart="<%= cart.to_json %>">
             <div class="card-body">
               <h5 class="card-title"><%=cart[:name] %></h5>
               <h6 class="card-subtitle mb-2 text-muted"><%= cart[:location]%></h6>

@@ -49,8 +49,10 @@ function initMap() {
             infoTooltipWindow.setContent(marker.getTitle());
             infoTooltipWindow.open(marker.getMap(), marker);
 
+            const markerId = marker.getTitle().split(' ').join('-');
+
             // Highlight Food Cart card
-            if (highlightedFoodCartId == marker.getTitle()) {
+            if (highlightedFoodCartId == markerId) {
                 // If clicking on same marker, toggle highlighting class
                 if (highlightedFoodCardElem.classList.contains(highlightedFoodCardClass)) {                   
                     highlightedFoodCardElem.classList.remove(highlightedFoodCardClass);
@@ -64,7 +66,7 @@ function initMap() {
                     highlightedFoodCardElem.classList.remove(highlightedFoodCardClass);
                 }
                             
-                highlightedFoodCartId = marker.getTitle();
+                highlightedFoodCartId = markerId;
                 highlightedFoodCardElem = document.getElementById(highlightedFoodCartId);
                 highlightedFoodCardElem.classList.add(highlightedFoodCardClass);                
             }

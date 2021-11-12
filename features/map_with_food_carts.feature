@@ -28,3 +28,18 @@ Feature: view Google Maps with Food Carts
         And I should see 2 markers on the map
         And I should see a map marker for "The Chicken Dudes"
         And I should see a map marker for "The Mexican Cart"
+
+    @javascript
+    Scenario: clicking on the food cart map marker once highlights the food cart card
+        Given I am on the home page
+        And There is a Google Map
+        When I click on the Google Map food cart marker for "The Chicken Dudes"
+        Then I should see "The Chicken Dudes" card highlighted
+
+    @javascript
+    Scenario: clicking on the same food cart map marker twice does not highlight the food cart card
+        Given I am on the home page
+        And There is a Google Map
+        When I click on the Google Map food cart marker for "The Chicken Dudes"
+        And I click on the Google Map food cart marker for "The Chicken Dudes"
+        Then I should not see "The Chicken Dudes" card highlighted
