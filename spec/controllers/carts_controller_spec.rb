@@ -23,11 +23,30 @@ describe CartsController, type: :controller do
 
   describe "index" do
     it "should assign the carts variable" do
-      FoodCart.create()
+      owner_user = User.create!(:name => 'owner', :email_id => 'owneremail@gmail.com')
+      default_opening_time = DateTime.parse('9:30:00').strftime("%I:%M %p")
+      default_closing_time = DateTime.parse('18:00:00').strftime("%I:%M %p")
+      test_food_cart = FoodCart.create!({
+        :name => 'the halal guys',
+        :user_id => owner_user[:id],
+        :location => 'location2',
+        :coordinates => '10, 20',
+        :opening_time => default_opening_time,
+        :closing_time => default_closing_time,
+        :payment_options => 'cash, card, venmo',
+        :top_rated_food => 'chicken over rice',
+      })
 
-      controller.index
+      get :index
 
-      expect(controller.instance_variable_get(:@carts)).to eq(FoodCart.all)
+      expect(@controller.instance_variable_get(:@carts).length).to eq(1)
+      expect(@controller.instance_variable_get(:@carts)[0][:name]).to eq(test_food_cart[:name])
+      expect(@controller.instance_variable_get(:@carts)[0][:location]).to eq(test_food_cart[:location])
+      expect(@controller.instance_variable_get(:@carts)[0][:coordinates]).to eq(test_food_cart[:coordinates])
+      expect(@controller.instance_variable_get(:@carts)[0][:opening_time]).not_to eq(nil)
+      expect(@controller.instance_variable_get(:@carts)[0][:closing_time]).not_to eq(nil)
+      expect(@controller.instance_variable_get(:@carts)[0][:payment_options]).to eq(test_food_cart[:payment_options])
+      expect(@controller.instance_variable_get(:@carts)[0][:top_rated_food]).to eq(test_food_cart[:top_rated_food])
     end
   end
 
@@ -42,6 +61,7 @@ describe CartsController, type: :controller do
         :name => 'the halal guys',
         :user_id => @owner_user[:id],
         :location => 'location2',
+        :coordinates => '10, 20',
         :opening_time => default_opening_time,
         :closing_time => default_closing_time,
         :payment_options => 'cash, card, venmo',
@@ -54,11 +74,12 @@ describe CartsController, type: :controller do
       expected_cart = Hash.new
       expected_cart[:name] = @test_food_cart[:name]
       expected_cart[:location] = @test_food_cart[:location]
+      expected_cart[:coordinates] = @test_food_cart[:coordinates]
       expected_cart[:owner] = @owner_user[:name]
       expected_cart[:paymentOptions] = @test_food_cart[:payment_options].split(", ")
       expected_cart[:topRatedFood] = @test_food_cart[:top_rated_food]
-      expected_cart[:openHours] = "05:30AM"
-      expected_cart[:closeHours] = "02:00PM"
+      expected_cart[:openHours] = "04:30AM"
+      expected_cart[:closeHours] = "01:00PM"
       
       get :cart, params: { id: @test_food_cart[:id] }
 
@@ -83,6 +104,7 @@ describe CartsController, type: :controller do
         :name => 'the halal guys',
         :user_id => owner_user[:id],
         :location => 'location2',
+        :coordinates => '10, 20',
         :opening_time => default_opening_time,
         :closing_time => default_closing_time,
         :payment_options => 'cash, card, venmo',
