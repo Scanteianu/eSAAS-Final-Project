@@ -1,7 +1,7 @@
-Feature: view cart list
+Feature: view Google Maps with Food Carts
 
     As a hungry student
-    I want to see what food truck options there are
+    I want to see what food truck are nearby on the map
 
     Background: carts in database
 
@@ -21,12 +21,25 @@ Feature: view cart list
             | 1            | 3       | 3      | the food was alright             |
             | 1            | 3       | 5      | The carne asada was super tender |
 
-    Scenario: Write a review for a food cart
+    @javascript
+    Scenario: view all of the food cart markers on the map
+        When I go to the home page
+        Then I should see Google Maps
+        And I should see 2 markers on the map
+        And I should see a map marker for "The Chicken Dudes"
+        And I should see a map marker for "The Mexican Cart"
+
+    @javascript
+    Scenario: clicking on the food cart map marker once highlights the food cart card
         Given I am on the home page
-        When I view more for "The Chicken Dudes"
-        And I fill in "cart_review[review]" with "I love the chicken over rice"
-        And I select "5" from "cart_review[rating]"
-        And I press "Save Changes"
-        Then I should be on the view page for "The Chicken Dudes"
-        And I should see "Rating: 5/5"
-        And I should see "I love the chicken over rice"
+        And There is a Google Map
+        When I click on the Google Map food cart marker for "The Chicken Dudes"
+        Then I should see "The Chicken Dudes" card highlighted
+
+    @javascript
+    Scenario: clicking on the same food cart map marker twice does not highlight the food cart card
+        Given I am on the home page
+        And There is a Google Map
+        When I click on the Google Map food cart marker for "The Chicken Dudes"
+        And I click on the Google Map food cart marker for "The Chicken Dudes"
+        Then I should not see "The Chicken Dudes" card highlighted

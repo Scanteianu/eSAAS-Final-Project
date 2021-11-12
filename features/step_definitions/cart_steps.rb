@@ -32,3 +32,37 @@ When /I view more for "(.*)"/ do |food_cart_name|
   view_more_food_cart_link = page.find("a[href='/carts/cart/#{found_food_cart.id}']")
   view_more_food_cart_link.click
 end
+
+Then /I should see Google Maps/ do
+  expect(page).to have_selector('.gmap-container iframe', visible: true)
+end
+
+Then /I should see ([1-9]+) markers on the map/ do |marker_num|
+  markers = page.all('.gmap-container map')
+  expect(markers.length).to eq(marker_num.to_i)
+end
+
+Then /I should see a map marker for "(.*)"/ do |map_marker_name|
+  marker = page.find(".gmap-container map area[title='#{map_marker_name}']")
+  expect(marker).not_to eq(nil)
+end
+
+Given /There is a Google Map/ do
+  expect(page).to have_selector('.gmap-container iframe', visible: true)
+end
+
+When /I click on the Google Map food cart marker for "(.*)"/ do |map_marker_name|
+  marker = page.find(".gmap-container map area[title='#{map_marker_name}']")
+  marker.click
+  sleep 0.5
+end
+
+Then /I should(?: (.*))? see "(.*)" card highlighted/ do |not_visible, food_cart_card_name|
+  marker_class = page.find("##{food_cart_card_name.split(' ').join('-')}")[:class]
+  highlighted_card_class = 'highlighted-food-cart-card'
+  if not_visible != nil
+     expect(marker_class).not_to include(highlighted_card_class)
+  else
+    expect(marker_class).to include(highlighted_card_class)
+  end
+end

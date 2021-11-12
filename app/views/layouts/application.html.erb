@@ -7,6 +7,7 @@
     <%= stylesheet_link_tag 'application', 'media' => 'all' %>
     <%= javascript_include_tag 'application' %>
     <%= csrf_meta_tags %>
+    <%= favicon_link_tag asset_path('favicon.ico') %>
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <meta name="google-signin-client_id" content="903240660780-2d403fhv3qd8511rd348p6o41ee5t8mv.apps.googleusercontent.com">
     <div class="g-signin2" data-onsuccess="onSignIn"></div>
@@ -37,13 +38,14 @@
       <h1 class="title">Food Trucker</h1>
       <div id="username" style="float:right; padding-left: 60%;"></div>
     </nav>
-    <div class="container">
+    <div class="container-fluid">
       <%# Render "flash" messages in our application. This loads _flash.erb %>
       <%= render 'layouts/flash' %>
       <main id="main">
         <% if content_for?(:cart) %>
           <%= yield(:cart) %>
         <% end %>
+        
         <%= yield %>
       </main>
     </div>
