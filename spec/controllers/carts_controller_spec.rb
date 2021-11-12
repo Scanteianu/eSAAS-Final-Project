@@ -80,7 +80,7 @@ describe CartsController, type: :controller do
       expected_cart[:topRatedFood] = @test_food_cart[:top_rated_food]
       expected_cart[:openHours] = "04:30AM"
       expected_cart[:closeHours] = "01:00PM"
-      
+
       get :cart, params: { id: @test_food_cart[:id] }
 
       expect(@controller.instance_variable_get(:@currentCart)).to eq(expected_cart)
@@ -114,7 +114,7 @@ describe CartsController, type: :controller do
     end
 
     it "should create the review successfully" do
-      # food cart id must match one currently in DB 
+      # food cart id must match one currently in DB
       post :add_review, params: { id: 1, cart_review: { review: 'review text', rating: 1 } }
 
       # current user id param is hardcoded in controller and should be dynamic after adding user auth
@@ -124,7 +124,7 @@ describe CartsController, type: :controller do
 
     it "should redirect to the cart path" do
       post :add_review, params: { id: 1, cart_review: { review: 'review text', rating: 1 } }
-  
+
       expect(response).to redirect_to(cart_path(1))
     end
   end
