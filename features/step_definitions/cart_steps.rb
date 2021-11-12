@@ -32,3 +32,17 @@ When /I view more for "(.*)"/ do |food_cart_name|
   view_more_food_cart_link = page.find("a[href='/carts/cart/#{found_food_cart.id}']")
   view_more_food_cart_link.click
 end
+
+Then /I should see Google Maps/ do
+  expect(page).to have_selector('.gmap-container iframe', visible: true)
+end
+
+Then /I should see ([1-9]+) markers on the map/ do |marker_num|
+  markers = page.all('.gmap-container map')
+  expect(markers.length).to eq(marker_num.to_i)
+end
+
+Then /I should see a map marker for "(.*)"/ do |map_marker_name|
+  marker = page.find(".gmap-container map area[title='#{map_marker_name}']")
+  expect(marker).not_to eq(nil)
+end

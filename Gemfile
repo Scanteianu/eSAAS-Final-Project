@@ -21,8 +21,9 @@ group :test do
   gem 'cucumber-rails', :require => false
   gem 'cucumber-rails-training-wheels'
   gem 'simplecov', :require => false
-  gem 'phantomjs'
-  gem 'poltergeist'
+  gem 'selenium-webdriver'
+  gem 'webdrivers'
+  gem 'rspec-retry'
 end
 group :production do
   gem 'bundler', '>= 1.30'
