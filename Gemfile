@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 ruby '>= 2.6.6', '< 2.7.0'
 gem 'rails', '~> 5.2.0'
 gem 'pg', '~> 0.18'
+gem 'jquery-rails'
 
 # for Heroku deployment
 group :development, :test do

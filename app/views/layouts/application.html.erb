@@ -18,8 +18,22 @@
         console.log('Image URL: ' + profile.getImageUrl());
         console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
         document.getElementById("username").innerHTML = "Signed in as: "+profile.getEmail()
+
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", '/setusername');
+        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))
+        xhr.onreadystatechange = function() {
+            if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                // Request finished. Do processing here.
+            }
+        }
+        xhr.send(JSON.stringify({"username":profile.getEmail()}));
       }
     </script>
+
+
     <a href="#" onclick="signOut();">Sign out</a>
     <script>
       function signOut() {
@@ -27,6 +41,18 @@
         auth2.signOut().then(function () {
           console.log('User signed out.');
           document.getElementById("username").innerHTML ="Not signed in"
+
+
+          var xhr = new XMLHttpRequest();
+          xhr.open("POST", '/setusername');
+          xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+          xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))
+          xhr.onreadystatechange = function() {
+              if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                  // Request finished. Do processing here.
+              }
+          }
+          xhr.send(JSON.stringify({"username":"Nil"}));
         });
       }
     </script>
