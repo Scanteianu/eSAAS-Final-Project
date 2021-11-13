@@ -10,6 +10,10 @@
     <%= favicon_link_tag asset_path('favicon.ico') %>
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <meta name="google-signin-client_id" content="903240660780-2d403fhv3qd8511rd348p6o41ee5t8mv.apps.googleusercontent.com">
+
+  </head>
+  <body>
+
     <div class="g-signin2" data-onsuccess="onSignIn"></div>
     <script>
       function onSignIn(googleUser) {
@@ -19,8 +23,22 @@
         console.log('Image URL: ' + profile.getImageUrl());
         console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
         document.getElementById("username").innerHTML = "Signed in as: "+profile.getEmail()
+
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", '/setusername');
+        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))
+        xhr.onreadystatechange = function() {
+            if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                // Request finished. Do processing here.
+            }
+        }
+        xhr.send(JSON.stringify({"username":profile.getEmail()}));
       }
     </script>
+
+
     <a href="#" onclick="signOut();">Sign out</a>
     <script>
       function signOut() {
@@ -28,11 +46,21 @@
         auth2.signOut().then(function () {
           console.log('User signed out.');
           document.getElementById("username").innerHTML ="Not signed in"
+
+
+          var xhr = new XMLHttpRequest();
+          xhr.open("POST", '/setusername');
+          xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+          xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))
+          xhr.onreadystatechange = function() {
+              if (this.readyState === XMLHttpRequest.DONE && this.status === 200) {
+                  // Request finished. Do processing here.
+              }
+          }
+          xhr.send(JSON.stringify({"username":"Nil"}));
         });
       }
     </script>
-  </head>
-  <body>
     <%# These classes come from the Bootstrap CSS framework. %>
     <nav class="navbar navbar-expand-lg bg-primary text-white mb-3">
       <h1 class="title">Food Trucker</h1>
@@ -45,7 +73,7 @@
         <% if content_for?(:cart) %>
           <%= yield(:cart) %>
         <% end %>
-        
+
         <%= yield %>
       </main>
     </div>

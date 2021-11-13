@@ -22,6 +22,20 @@ class CartsController < ApplicationController
   def cart
     getCartFromDb(params[:id])
   end
+
+  def setusername
+    if params[:username]=="Nil"
+      then
+      session[:username]=nil
+      puts "user logged out: " + params[:username]
+      render :json => {"setUsername"=>session[:username]}
+    else
+      session[:username]=params[:username]
+      puts "request received to set username: " + params[:username]
+      render :json => {"setUsername"=>session[:username]}
+    end
+
+  end
   attr_accessor :currentCart
   def getCartFromDb(index)
     cartFromDb = FoodCart.find_by_id(index)
