@@ -21,6 +21,22 @@ describe CartsController, type: :controller do
     end
   end
 
+  describe "set username" do
+    it "sets username" do
+
+      get 'setusername', {:params =>{:username=> "dan"}}
+      expect(controller.session[:username]).to eq("dan")
+    end
+    it "clears username" do
+
+      get 'setusername', {:params =>{:username=> "Nil"}}
+      expect(controller.session[:username]).to eq(nil)
+    end
+  end
+
+
+
+
   describe "index" do
     it "should assign the carts variable" do
       owner_user = User.create!(:name => 'owner', :email_id => 'owneremail@gmail.com')
