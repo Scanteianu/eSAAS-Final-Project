@@ -20,9 +20,9 @@ ActiveRecord::Schema.define(version: 2021_11_10_214823) do
     t.datetime "closing_time"
     t.string "payment_options"
     t.string "top_rated_food"
+    t.string "coordinates"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "coordinates"
   end
 
   create_table "reviews", force: :cascade do |t|

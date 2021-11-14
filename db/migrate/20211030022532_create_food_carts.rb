@@ -8,6 +8,7 @@ class CreateFoodCarts < ActiveRecord::Migration[5.2]
       t.datetime :closing_time
       t.string :payment_options
       t.string :top_rated_food
+      t.string :coordinates
 
       t.timestamps null: false
     end
