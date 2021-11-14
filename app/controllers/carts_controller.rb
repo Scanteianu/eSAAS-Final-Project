@@ -8,8 +8,8 @@ class CartsController < ApplicationController
       foodCartHash[:id] = foodCart[:id]
       foodCartHash[:name] = foodCart[:name]
       foodCartHash[:location] = foodCart[:location]
-      foodCartHash[:opening_time] = Time.parse(foodCart[:opening_time].to_s()).in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p")
-      foodCartHash[:closing_time] = Time.parse(foodCart[:closing_time].to_s()).in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p")
+      foodCartHash[:opening_time] = Time.parse(foodCart[:opening_time].to_s()).in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p") rescue nil
+      foodCartHash[:closing_time] = Time.parse(foodCart[:closing_time].to_s()).in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p") rescue nil
       foodCartHash[:payment_options] = foodCart[:payment_options]
       foodCartHash[:top_rated_food] = foodCart[:top_rated_food]
       foodCartHash[:coordinates] = foodCart[:coordinates]
@@ -36,6 +36,7 @@ class CartsController < ApplicationController
     end
 
   end
+
   attr_accessor :currentCart
   def getCartFromDb(index)
     cartFromDb = FoodCart.find_by_id(index)
@@ -81,6 +82,31 @@ class CartsController < ApplicationController
     redirect_to cart_path(@review[:food_cart_id])
   end
 
+  def new
+    @all_payment_options = ['Cash','Card','Venmo']
+    @all_weekdays = ['Sun', 'Mon', 'Tue', 'Wed', "Thu", 'Fri', 'Sat']
+    # should render new.html.erb
+  end
+
+
+  def create
+    if session[:username] == nil
+      flash[:notice] = "User must login to create a cart"
+      redirect_to root_path
+      return
+    end
+    cartToCreate = Hash.new
+    cartToCreate[:name] = cart_params[:name]
+    cartToCreate[:location] = cart_params[:location]
+    cartToCreate[:opening_time] = cart_params[:opening_time]
+    cartToCreate[:closing_time] = cart_params[:closing_time]
+    cartToCreate[:payment_options] = cart_params[:payment_options].keys.join(', ')
+    # puts(cartToCreate)
+    @cart = FoodCart.create!(cartToCreate)
+    flash[:notice] = "#{@cart.name} was successfully created."
+    redirect_to root_path
+  end
+
   def listifyPaymentOptions(paymentOptStr)
     return paymentOptStr.split(", ")
   end
@@ -91,5 +117,10 @@ class CartsController < ApplicationController
   def review_params
     # params.require(:review).permit(:user_id, :cart_id, :rating, :review, :release_date)
     params.require(:cart_review).permit(:review, :rating)
+  end
+
+  def cart_params
+    params.require(:cart).permit(:name, :location, :menu, :opening_time, :closing_time, payment_options:{})
+    # params.require(:cart).permit(:name, :location, :menu, :opening_time, :closing_time, payment_options:{}, open_days:{})
   end
 end
