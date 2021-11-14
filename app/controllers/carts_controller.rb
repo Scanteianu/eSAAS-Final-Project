@@ -45,7 +45,7 @@ class CartsController < ApplicationController
     cartToDisplay[:name] = cartFromDb[:name]
     cartToDisplay[:location] = cartFromDb[:location]
     cartToDisplay[:coordinates] = cartFromDb[:coordinates]
-    cartToDisplay[:owner] = User.find_by_id(cartFromDb[:user_id])[:name]
+    cartToDisplay[:owner] = User.find_by_id(cartFromDb[:user_id])[:name] rescue "NA"
     cartToDisplay[:paymentOptions] = listifyPaymentOptions(cartFromDb[:payment_options])
     cartToDisplay[:topRatedFood]= cartFromDb[:top_rated_food]
 
@@ -88,6 +88,16 @@ class CartsController < ApplicationController
     # should render new.html.erb
   end
 
+  def edit
+    @cart = FoodCart.find_by_id(params[:id])
+    @all_payment_options = ['Cash','Card','Venmo']
+    @all_weekdays = ['Sun', 'Mon', 'Tue', 'Wed', "Thu", 'Fri', 'Sat']
+    @accepted_payment_options = @cart.payment_options.split(", ")
+    @open_on_days = []
+    #if open days added to schema, uncomment below line
+    # @open_on_days = @cart.open_on.split(", ")
+  end
+
 
   def create
     if session[:username] == nil
@@ -95,16 +105,34 @@ class CartsController < ApplicationController
       redirect_to root_path
       return
     end
-    cartToCreate = Hash.new
-    cartToCreate[:name] = cart_params[:name]
-    cartToCreate[:location] = cart_params[:location]
-    cartToCreate[:opening_time] = cart_params[:opening_time]
-    cartToCreate[:closing_time] = cart_params[:closing_time]
-    cartToCreate[:payment_options] = cart_params[:payment_options].keys.join(', ')
+    cart_to_create = Hash.new
+    cart_to_create[:name] = cart_params[:name]
+    cart_to_create[:location] = cart_params[:location]
+    cart_to_create[:opening_time] = cart_params[:opening_time]
+    cart_to_create[:closing_time] = cart_params[:closing_time]
+    cart_to_create[:payment_options] = cart_params[:payment_options].keys.join(', ')
     # puts(cartToCreate)
-    @cart = FoodCart.create!(cartToCreate)
+    @cart = FoodCart.create!(cart_to_create)
     flash[:notice] = "#{@cart.name} was successfully created."
     redirect_to root_path
+  end
+
+  def update
+    if session[:username] == nil
+      flash[:notice] = "User must login to edit a cart"
+      redirect_to cart_path(params[:id])
+      return
+    end
+    cart_to_update = Hash.new
+    cart_to_update[:name] = cart_params[:name]
+    cart_to_update[:location] = cart_params[:location]
+    cart_to_update[:opening_time] = cart_params[:opening_time]
+    cart_to_update[:closing_time] = cart_params[:closing_time]
+    cart_to_update[:payment_options] = cart_params[:payment_options].keys.join(', ')
+    @cart = FoodCart.find params[:id]
+    @cart.update_attributes!(cart_to_update)
+    flash[:notice] = "#{@cart.name} was successfully updated."
+    redirect_to cart_path(params[:id])
   end
 
   def listifyPaymentOptions(paymentOptStr)
