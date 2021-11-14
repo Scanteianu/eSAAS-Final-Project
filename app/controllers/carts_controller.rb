@@ -31,6 +31,11 @@ class CartsController < ApplicationController
       render :json => {"setUsername"=>session[:username]}
     else
       session[:username]=params[:username]
+      user = User.find_by email_id: params[:username]
+      if user == nil
+        new_user = User.create(name: params[:name], email_id: params[:username])
+        puts("new user created: "+ new_user.email_id)
+      end
       puts "request received to set username: " + params[:username]
       render :json => {"setUsername"=>session[:username]}
     end

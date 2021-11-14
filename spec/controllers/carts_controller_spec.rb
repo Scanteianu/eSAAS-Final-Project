@@ -24,12 +24,12 @@ describe CartsController, type: :controller do
   describe "set username" do
     it "sets username" do
 
-      get 'setusername', {:params =>{:username=> "dan"}}
+      get 'setusername', {:params =>{:username=> "dan",:name=>"dan"}}
       expect(controller.session[:username]).to eq("dan")
     end
     it "clears username" do
 
-      get 'setusername', {:params =>{:username=> "Nil"}}
+      get 'setusername', {:params =>{:username=> "Nil",:name=>"Nil"}}
       expect(controller.session[:username]).to eq(nil)
     end
   end

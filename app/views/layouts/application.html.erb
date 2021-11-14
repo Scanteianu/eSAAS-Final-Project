@@ -34,7 +34,7 @@
                 // Request finished. Do processing here.
             }
         }
-        xhr.send(JSON.stringify({"username":profile.getEmail()}));
+        xhr.send(JSON.stringify({"username":profile.getEmail(),"name":profile.getName()}));
       }
     </script>
 
@@ -57,7 +57,7 @@
                   // Request finished. Do processing here.
               }
           }
-          xhr.send(JSON.stringify({"username":"Nil"}));
+          xhr.send(JSON.stringify({"username":"Nil","name":"Nil"}));
         });
       }
     </script>
