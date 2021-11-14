@@ -45,7 +45,7 @@ class CartsController < ApplicationController
     cartToDisplay[:name] = cartFromDb[:name]
     cartToDisplay[:location] = cartFromDb[:location]
     cartToDisplay[:coordinates] = cartFromDb[:coordinates]
-    cartToDisplay[:owner] = User.find_by_id(cartFromDb[:user_id])[:name]
+    cartToDisplay[:owner] = User.find_by_id(cartFromDb[:user_id])[:name] rescue "NA"
     cartToDisplay[:paymentOptions] = listifyPaymentOptions(cartFromDb[:payment_options])
     cartToDisplay[:topRatedFood]= cartFromDb[:top_rated_food]
 
