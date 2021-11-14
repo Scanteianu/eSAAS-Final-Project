@@ -42,4 +42,6 @@ Top rated food: <%= @currentCart[:topRatedFood] %>
     <%= submit_tag 'Save Changes', :class => 'btn btn-primary' %>
   <% end %>
 </div>
-
+<div>
+  <%= link_to 'Edit Cart Details', edit_cart_path, :class => 'btn btn-primary' %>
+</div>
