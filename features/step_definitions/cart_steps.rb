@@ -18,6 +18,10 @@ Given /the following reviews exist/ do |reviews_table|
   end
 end
 
+And /I am logged in/ do
+  post 'setusername', {:username=> "test_email@columbia.edu",:name=>"test_name"}
+end
+
 Then /I should see the user review for "(.*)"/ do |username|
   found_user = User.find_by(name: username)
   found_review = Review.find_by(user_id: found_user.id)
