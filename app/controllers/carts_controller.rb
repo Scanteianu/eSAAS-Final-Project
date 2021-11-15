@@ -111,7 +111,6 @@ class CartsController < ApplicationController
 
 
   def create
-    # puts "current user is at create is : "+ session[:username]
     # if session[:username] == nil
     #   flash[:notice] = "User must login to create a cart"
     #   redirect_to root_path
@@ -120,6 +119,7 @@ class CartsController < ApplicationController
     cart_to_create = Hash.new
     cart_to_create[:name] = cart_params[:name]
     cart_to_create[:location] = cart_params[:location]
+    cart_to_create[:coordinates] = cart_params[:coordinates]
     cart_to_create[:opening_time] = cart_params[:opening_time]
     cart_to_create[:closing_time] = cart_params[:closing_time]
     cart_to_create[:payment_options] = cart_params[:payment_options].keys.join(', ') rescue ""
@@ -138,6 +138,7 @@ class CartsController < ApplicationController
     cart_to_update = Hash.new
     cart_to_update[:name] = cart_params[:name]
     cart_to_update[:location] = cart_params[:location]
+    cart_to_update[:coordinates] = cart_params[:coordinates]
     cart_to_update[:opening_time] = cart_params[:opening_time]
     cart_to_update[:closing_time] = cart_params[:closing_time]
     cart_to_update[:payment_options] = cart_params[:payment_options].keys.join(', ') rescue ""
@@ -160,7 +161,7 @@ class CartsController < ApplicationController
   end
 
   def cart_params
-    params.require(:cart).permit(:name, :location, :menu, :opening_time, :closing_time, payment_options:{})
-    # params.require(:cart).permit(:name, :location, :menu, :opening_time, :closing_time, payment_options:{}, open_days:{})
+    params.require(:cart).permit(:name, :location, :coordinates, :menu, :opening_time, :closing_time, payment_options:{})
+    # params.require(:cart).permit(:name, :location, :menu, :opening_time, :closing_time, payment_options:{}, open_days:{}, :coordinates)
   end
 end

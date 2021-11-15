@@ -2,9 +2,11 @@
 
 <%= form_tag create_cart_path, :class => 'form' do %>
   <%= label :cart, :name, 'Name', :class => 'col-form-label' %>
-  <%= text_field :cart, :name, :class => 'form-control' %>
-  <%= label :cart, :location, 'Location', :class => 'col-form-label' %>
-  <%= text_field :cart, :location, :class => 'form-control' %>
+  <%= text_field :cart, :name, :class => 'form-control', required: true %>
+  <%= label :cart, :location, 'Address', :class => 'col-form-label' %>
+  <%= text_field :cart, :location, :class => 'form-control', required: true %>
+  <%= label :cart, :coordinates, 'Location Coordinates', :class => 'col-form-label' %>
+  <%= text_field :cart, :coordinates, :class => 'form-control', required: true %>
   <%= label :cart, :opening_time, 'Opens at: ', :class => 'col-form-label' %>
   <%= time_field :cart, :opening_time, :class => 'form-control' %>
   <%= label :cart, :closing_time, 'Closes at: ', :class => 'col-form-label' %>
@@ -25,6 +27,6 @@
     </div>
   <% end %>
   <br/>
-  <%= submit_tag 'Save Changes', :class => 'btn btn-primary' %>
+  <%= submit_tag 'Add Cart', :class => 'btn btn-primary' %>
   <%= link_to 'Cancel', root_path, :class => 'btn btn-secondary' %>
 <% end %>
