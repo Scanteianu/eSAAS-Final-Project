@@ -105,17 +105,18 @@ class CartsController < ApplicationController
 
 
   def create
-    if session[:username] == nil
-      flash[:notice] = "User must login to create a cart"
-      redirect_to root_path
-      return
-    end
+    # puts "current user is at create is : "+ session[:username]
+    # if session[:username] == nil
+    #   flash[:notice] = "User must login to create a cart"
+    #   redirect_to root_path
+    #   return
+    # end
     cart_to_create = Hash.new
     cart_to_create[:name] = cart_params[:name]
     cart_to_create[:location] = cart_params[:location]
     cart_to_create[:opening_time] = cart_params[:opening_time]
     cart_to_create[:closing_time] = cart_params[:closing_time]
-    cart_to_create[:payment_options] = cart_params[:payment_options].keys.join(', ')
+    cart_to_create[:payment_options] = cart_params[:payment_options].keys.join(', ') rescue ""
     # puts(cartToCreate)
     @cart = FoodCart.create!(cart_to_create)
     flash[:notice] = "#{@cart.name} was successfully created."
@@ -123,17 +124,17 @@ class CartsController < ApplicationController
   end
 
   def update
-    if session[:username] == nil
-      flash[:notice] = "User must login to edit a cart"
-      redirect_to cart_path(params[:id])
-      return
-    end
+    # if session[:username] == nil
+    #   flash[:notice] = "User must login to edit a cart"
+    #   redirect_to cart_path(params[:id])
+    #   return
+    # end
     cart_to_update = Hash.new
     cart_to_update[:name] = cart_params[:name]
     cart_to_update[:location] = cart_params[:location]
     cart_to_update[:opening_time] = cart_params[:opening_time]
     cart_to_update[:closing_time] = cart_params[:closing_time]
-    cart_to_update[:payment_options] = cart_params[:payment_options].keys.join(', ')
+    cart_to_update[:payment_options] = cart_params[:payment_options].keys.join(', ') rescue ""
     @cart = FoodCart.find params[:id]
     @cart.update_attributes!(cart_to_update)
     flash[:notice] = "#{@cart.name} was successfully updated."
