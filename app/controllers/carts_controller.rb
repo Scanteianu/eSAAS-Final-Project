@@ -79,7 +79,13 @@ class CartsController < ApplicationController
 
   def add_review
     review_hash = Hash.new
-    review_hash[:user_id] = 1
+    if session[:username]
+      then
+        user = User.find_by email_id: session[:username]
+      else
+        user = User.find_by_id(1) #todo: this should probably throw an error
+      end
+    review_hash[:user_id] = user.id
     review_hash[:food_cart_id] = params[:id]
     review_hash[:rating] = review_params[:rating]
     review_hash[:review] = review_params[:review]

@@ -125,9 +125,18 @@ describe CartsController, type: :controller do
     it "should create the review successfully" do
       # food cart id must match one currently in DB
       post :add_review, params: { id: 1, cart_review: { review: 'review text', rating: 1 } }
-
       # current user id param is hardcoded in controller and should be dynamic after adding user auth
       fetched_review = Review.find_by(:food_cart_id => @test_food_cart[:id], :user_id => 1)
+      expect(@controller.instance_variable_get(:@review)).to eq(fetched_review)
+    end
+
+    it "should create the review successfully with login" do
+      # food cart id must match one currently in DB
+      get 'setusername', {:params =>{:username=> "dan",:name=>"dan"}}
+      post :add_review, params: { id: 1, cart_review: { review: 'review text', rating: 1 } }
+      user = User.find_by(:name => 'dan')
+      # current user id param is hardcoded in controller and should be dynamic after adding user auth
+      fetched_review = Review.find_by(:food_cart_id => @test_food_cart[:id], :user_id => user.id)
       expect(@controller.instance_variable_get(:@review)).to eq(fetched_review)
     end
 
@@ -151,10 +160,10 @@ describe CartsController, type: :controller do
 
       post :create, params:{
         "cart"=>{
-          "name"=>"the new cart", 
-          "location"=>"113th broadway", 
-          "opening_time"=>"14:03", 
-          "closing_time"=>"02:35", 
+          "name"=>"the new cart",
+          "location"=>"113th broadway",
+          "opening_time"=>"14:03",
+          "closing_time"=>"02:35",
           "payment_options"=>{"Cash"=>"1", "Venmo"=>"1"}
         }
       }
@@ -179,10 +188,10 @@ describe CartsController, type: :controller do
       post :update, params:{
         "id" => test_cart[:id] ,
         "cart"=>{
-          "name"=>"the modified cart", 
-          "location"=>"123th broadway", 
-          "opening_time"=>"14:03", 
-          "closing_time"=>"02:35", 
+          "name"=>"the modified cart",
+          "location"=>"123th broadway",
+          "opening_time"=>"14:03",
+          "closing_time"=>"02:35",
           "payment_options"=>{"Cash"=>"1"}
         }
       }

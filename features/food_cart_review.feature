@@ -30,3 +30,15 @@ Feature: view cart list
         Then I should be on the view page for "The Chicken Dudes"
         And I should see "Rating: 5/5"
         And I should see "I love the chicken over rice"
+
+    Scenario: Write a review for a food cart
+        Given I am on the home page
+        When I view more for "The Chicken Dudes"
+        And I am logged in
+        And I fill in "cart_review[review]" with "the pita is meh"
+        And I select "3" from "cart_review[rating]"
+        And I press "Save Changes"
+        Then I should be on the view page for "The Chicken Dudes"
+        And I should see "Rating: 3/5"
+        And I should see "the pita is meh"
+        And I should see "test1"
