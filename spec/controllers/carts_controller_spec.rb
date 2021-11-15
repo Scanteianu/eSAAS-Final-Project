@@ -23,19 +23,14 @@ describe CartsController, type: :controller do
 
   describe "set username" do
     it "sets username" do
-
       get 'setusername', {:params =>{:username=> "dan",:name=>"dan"}}
       expect(controller.session[:username]).to eq("dan")
     end
     it "clears username" do
-
       get 'setusername', {:params =>{:username=> "Nil",:name=>"Nil"}}
       expect(controller.session[:username]).to eq(nil)
     end
   end
-
-
-
 
   describe "index" do
     it "should assign the carts variable" do
@@ -52,9 +47,7 @@ describe CartsController, type: :controller do
         :payment_options => 'cash, card, venmo',
         :top_rated_food => 'chicken over rice',
       })
-
       get :index
-
       expect(@controller.instance_variable_get(:@carts).length).to eq(1)
       expect(@controller.instance_variable_get(:@carts)[0][:name]).to eq(test_food_cart[:name])
       expect(@controller.instance_variable_get(:@carts)[0][:location]).to eq(test_food_cart[:location])
@@ -143,5 +136,64 @@ describe CartsController, type: :controller do
 
       expect(response).to redirect_to(cart_path(1))
     end
+  end
+
+  describe "upsert cart" do
+
+    it "create a new cart" do
+      get :new
+      expected_cart = Hash.new
+      expected_cart[:name] = "the new cart"
+      expected_cart[:location] = "113th broadway"
+      expected_cart[:opening_time] = "14:03"
+      expected_cart[:closing_time] = "02:35"
+      expected_cart[:payment_options] = "Cash, Venmo"
+
+      post :create, params:{
+        "cart"=>{
+          "name"=>"the new cart", 
+          "location"=>"113th broadway", 
+          "opening_time"=>"14:03", 
+          "closing_time"=>"02:35", 
+          "payment_options"=>{"Cash"=>"1", "Venmo"=>"1"}
+        }
+      }
+      expect(@controller.instance_variable_get(:@cart)[:name]).to eq(expected_cart[:name])
+      expect(@controller.instance_variable_get(:@cart)[:location]).to eq(expected_cart[:location])
+      expect(@controller.instance_variable_get(:@cart)[:coordinates]).to eq(expected_cart[:coordinates])
+      expect(@controller.instance_variable_get(:@cart)[:opening_time]).not_to eq(nil)
+      expect(@controller.instance_variable_get(:@cart)[:closing_time]).not_to eq(nil)
+      expect(@controller.instance_variable_get(:@cart)[:payment_options]).to eq(expected_cart[:payment_options])
+    end
+
+    it "edit an existing cart" do
+      test_cart = FoodCart.create!({
+        :name => 'the exisitng cart',
+        :location => '113th broadway',
+        :opening_time => "14:03",
+        :closing_time => "02:35",
+        :payment_options => "Cash, Venmo",
+      })
+
+      get :edit, params: { id: test_cart[:id] }
+      post :update, params:{
+        "id" => test_cart[:id] ,
+        "cart"=>{
+          "name"=>"the modified cart", 
+          "location"=>"123th broadway", 
+          "opening_time"=>"14:03", 
+          "closing_time"=>"02:35", 
+          "payment_options"=>{"Cash"=>"1"}
+        }
+      }
+      expect(response).to redirect_to cart_path(test_cart[:id])
+      modified_cart = FoodCart.find_by_id(test_cart[:id])
+      expect(modified_cart.name).to eq("the modified cart")
+      expect(modified_cart.location).to eq("123th broadway")
+      expect(modified_cart.opening_time).not_to eq(nil)
+      expect(modified_cart.closing_time).not_to eq(nil)
+      expect(modified_cart.payment_options).to eq("Cash")
+    end
+
   end
 end
