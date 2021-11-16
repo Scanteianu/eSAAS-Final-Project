@@ -122,6 +122,7 @@ class CartsController < ApplicationController
     cart_to_create[:coordinates] = cart_params[:coordinates]
     cart_to_create[:opening_time] = cart_params[:opening_time]
     cart_to_create[:closing_time] = cart_params[:closing_time]
+    cart_to_create[:top_rated_food] = cart_params[:top_rated_food]
     cart_to_create[:payment_options] = cart_params[:payment_options].keys.join(', ') rescue ""
     # puts(cartToCreate)
     @cart = FoodCart.create!(cart_to_create)
@@ -141,6 +142,7 @@ class CartsController < ApplicationController
     cart_to_update[:coordinates] = cart_params[:coordinates]
     cart_to_update[:opening_time] = cart_params[:opening_time]
     cart_to_update[:closing_time] = cart_params[:closing_time]
+    cart_to_update[:top_rated_food] = cart_params[:top_rated_food]
     cart_to_update[:payment_options] = cart_params[:payment_options].keys.join(', ') rescue ""
     @cart = FoodCart.find params[:id]
     @cart.update_attributes!(cart_to_update)
@@ -161,7 +163,7 @@ class CartsController < ApplicationController
   end
 
   def cart_params
-    params.require(:cart).permit(:name, :location, :coordinates, :menu, :opening_time, :closing_time, payment_options:{})
-    # params.require(:cart).permit(:name, :location, :menu, :opening_time, :closing_time, payment_options:{}, open_days:{}, :coordinates)
+    params.require(:cart).permit(:name, :location, :coordinates, :menu, :opening_time, :closing_time, :top_rated_food, payment_options:{})
+    # params.require(:cart).permit(:name, :location, :menu, :opening_time, :closing_time, :top_rated_food, payment_options:{}, open_days:{}, :coordinates)
   end
 end

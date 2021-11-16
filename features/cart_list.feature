@@ -26,7 +26,7 @@ Feature: view cart list
         Then I should see "The Chicken Dudes"
         And I should see "location1"
         And I should see "Payment Options: cash, venmo"
-        And I should see "Top Rated Food: chicken over rice"
+        And I should see "Signature Dish: chicken over rice"
         And I should see "The Mexican Cart"
         And I should see "location2"
         And I should see "Payment Options: cash, card"

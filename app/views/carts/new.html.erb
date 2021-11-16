@@ -11,6 +11,8 @@
   <%= time_field :cart, :opening_time, :class => 'form-control' %>
   <%= label :cart, :closing_time, 'Closes at: ', :class => 'col-form-label' %>
   <%= time_field :cart, :closing_time, :class => 'form-control' %>
+  <%= label :cart, :top_rated_food, 'Signature Dish', :class => 'col-form-label' %>
+  <%= text_field :cart, :top_rated_food, :class => 'form-control' %>
   <%= label :cart, :payment_options, 'Payment Options:', :class => 'col-form-label'  %>
   <% @all_payment_options.each do |option| %>
     <div class="form-check  form-check-inline">
