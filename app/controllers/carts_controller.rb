@@ -101,6 +101,8 @@ class CartsController < ApplicationController
 
   def edit
     @cart = FoodCart.find_by_id(params[:id])
+    @cart.opening_time = Time.parse(@cart.opening_time.to_s()).in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p")
+    @cart.closing_time = Time.parse(@cart.closing_time.to_s()).in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p")
     @all_payment_options = ['Cash','Card','Venmo']
     @all_weekdays = ['Sun', 'Mon', 'Tue', 'Wed', "Thu", 'Fri', 'Sat']
     @accepted_payment_options = @cart.payment_options.split(", ")
@@ -120,8 +122,8 @@ class CartsController < ApplicationController
     cart_to_create[:name] = cart_params[:name]
     cart_to_create[:location] = cart_params[:location]
     cart_to_create[:coordinates] = cart_params[:coordinates]
-    cart_to_create[:opening_time] = cart_params[:opening_time]
-    cart_to_create[:closing_time] = cart_params[:closing_time]
+    cart_to_create[:opening_time] = Time.parse(cart_params[:opening_time])
+    cart_to_create[:closing_time] = Time.parse(cart_params[:closing_time])
     cart_to_create[:top_rated_food] = cart_params[:top_rated_food]
     cart_to_create[:payment_options] = cart_params[:payment_options].keys.join(', ') rescue ""
     # puts(cartToCreate)
@@ -140,8 +142,8 @@ class CartsController < ApplicationController
     cart_to_update[:name] = cart_params[:name]
     cart_to_update[:location] = cart_params[:location]
     cart_to_update[:coordinates] = cart_params[:coordinates]
-    cart_to_update[:opening_time] = cart_params[:opening_time]
-    cart_to_update[:closing_time] = cart_params[:closing_time]
+    cart_to_update[:opening_time] = Time.parse(cart_params[:opening_time])
+    cart_to_update[:closing_time] = Time.parse(cart_params[:closing_time])
     cart_to_update[:top_rated_food] = cart_params[:top_rated_food]
     cart_to_update[:payment_options] = cart_params[:payment_options].keys.join(', ') rescue ""
     @cart = FoodCart.find params[:id]
