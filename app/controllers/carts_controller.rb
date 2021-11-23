@@ -21,7 +21,6 @@ class CartsController < ApplicationController
 
   def cart
     getCartFromDb(params[:id])
-    @is_verified=verify_user
   end
 
   def setusername
@@ -67,7 +66,9 @@ class CartsController < ApplicationController
     fetchedReviews = FoodCart.get_all_reviews(index)
     for review in fetchedReviews
       reviewHash = Hash.new
-      reviewHash[:username] = User.find_by_id(review[:user_id])[:name]
+      user=User.find_by_id(review[:user_id])
+      reviewHash[:username] = user[:name]
+      reviewHash[:is_verified] = verify_user(user[:email_id])
       reviewHash[:rating] = review[:rating]
       reviewHash[:review] = review[:review]
       reviewHash[:createdAt] = review[:created_at]
@@ -170,11 +171,9 @@ class CartsController < ApplicationController
     # params.require(:cart).permit(:name, :location, :menu, :opening_time, :closing_time, :top_rated_food, payment_options:{}, open_days:{}, :coordinates)
   end
 
-  def verify_user
-    #get user from session var
-    curr_user= session[:username]
+  def verify_user(user_email)
     #check if it has columbia.edu or barnard.edu
-    if curr_user.include? "columbia.edu" or curr_user.include? "barnard.edu"
+    if user_email.include? "columbia.edu" or user_email.include? "barnard.edu"
       return true
     else
       return false
