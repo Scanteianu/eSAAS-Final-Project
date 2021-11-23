@@ -21,6 +21,7 @@ class CartsController < ApplicationController
 
   def cart
     getCartFromDb(params[:id])
+    @is_verified=verify_user
   end
 
   def setusername
@@ -168,4 +169,16 @@ class CartsController < ApplicationController
     params.require(:cart).permit(:name, :location, :coordinates, :menu, :opening_time, :closing_time, :top_rated_food, payment_options:{})
     # params.require(:cart).permit(:name, :location, :menu, :opening_time, :closing_time, :top_rated_food, payment_options:{}, open_days:{}, :coordinates)
   end
+
+  def verify_user
+    #get user from session var
+    curr_user= session[:username]
+    #check if it has columbia.edu or barnard.edu
+    if curr_user.include? "columbia.edu" or curr_user.include? "barnard.edu"
+      return true
+    else
+      return false
+    end
+  end
+  
 end
