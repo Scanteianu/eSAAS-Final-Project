@@ -39,7 +39,6 @@ class CartsController < ApplicationController
       puts "request received to set username: " + params[:username]
       render :json => {"setUsername"=>session[:username]}
     end
-
   end
 
   attr_accessor :currentCart
@@ -173,10 +172,14 @@ class CartsController < ApplicationController
 
   def verify_user(user_email)
     #check if it has columbia.edu or barnard.edu
-    if user_email.include? "columbia.edu" or user_email.include? "barnard.edu"
-      return true
-    else
+    if user_email.nil?
       return false
+    else
+      if user_email.include? "columbia.edu" or user_email.include? "barnard.edu"
+        return true
+      else
+        return false
+      end
     end
   end
   
