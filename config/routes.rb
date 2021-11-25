@@ -10,7 +10,8 @@ Rails.application.routes.draw do
   get 'carts/edit/:id' => 'carts#edit', as: 'edit_cart'
   post 'carts/new' => 'carts#create', as: 'create_cart'
   post 'carts/update/:id' => 'carts#update', as: 'submit_update'
-  post '/carts/cart/:id/review/:id' => 'carts#add_review', as: 'cart_review'
+  post '/carts/cart/:id/review/:id' => 'carts#add_review', as: 'add_cart_review'
+  get '/carts/cart/:id/review/:id' => 'carts#display_edit_review', as: 'display_edit_cart_review'
   post '/setusername' => 'carts#setusername', as: 'setusername'
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

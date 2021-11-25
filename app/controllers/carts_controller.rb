@@ -103,6 +103,10 @@ class CartsController < ApplicationController
     redirect_to cart_path(@review[:food_cart_id])
   end
 
+  def display_edit_review
+    puts 'editing revieeeeeeeeeeeeeeeew'
+  end
+
   def new
     @all_payment_options = ['Cash','Card','Venmo']
     @all_weekdays = ['Sun', 'Mon', 'Tue', 'Wed', "Thu", 'Fri', 'Sat']

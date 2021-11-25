@@ -24,3 +24,17 @@
     border: 1px solid #a4cae9;
     box-shadow: 5px 5px 2px 1px #accce6b7;
 }
+
+.review-edit-container {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    padding: 1.5rem;
+    background-color: #accce6;
+    border-radius: 18px;
+    border: 1px solid #a4cae9;
+    box-shadow: 5px 5px 2px 1px #accce6b7;
+}
+
+.hidden {
+    display: none;
+}
