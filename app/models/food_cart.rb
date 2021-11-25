@@ -1,4 +1,5 @@
 class FoodCart < ActiveRecord::Base
+    has_one_attached :image
     belongs_to :user, optional: true
     has_many :reviews, dependent: :destroy
     @allowed_payment_options = ["cash", "card", "venmo"]

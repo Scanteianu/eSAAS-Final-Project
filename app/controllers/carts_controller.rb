@@ -53,6 +53,9 @@ class CartsController < ApplicationController
     cartToDisplay[:owner] = User.find_by_id(cartFromDb[:user_id])[:name] rescue "NA"
     cartToDisplay[:paymentOptions] = listifyPaymentOptions(cartFromDb[:payment_options])
     cartToDisplay[:topRatedFood]= cartFromDb[:top_rated_food]
+    if cartFromDb.image.attached?
+      cartToDisplay[:image] = cartFromDb.image.variant(resize: "320x320")
+    end
 
     # Convert UTC time to eastern time
     parsed_open_time = Time.parse(cartFromDb[:opening_time].to_s())
@@ -118,16 +121,11 @@ class CartsController < ApplicationController
     #   redirect_to root_path
     #   return
     # end
-    cart_to_create = Hash.new
-    cart_to_create[:name] = cart_params[:name]
-    cart_to_create[:location] = cart_params[:location]
-    cart_to_create[:coordinates] = cart_params[:coordinates]
-    cart_to_create[:opening_time] = Time.parse(cart_params[:opening_time])
-    cart_to_create[:closing_time] = Time.parse(cart_params[:closing_time])
-    cart_to_create[:top_rated_food] = cart_params[:top_rated_food]
-    cart_to_create[:payment_options] = cart_params[:payment_options].keys.join(', ') rescue ""
+    cart_params[:opening_time] = Time.parse(cart_params[:opening_time])
+    cart_params[:closing_time] = Time.parse(cart_params[:closing_time])
+    cart_params[:payment_options] = cart_params[:payment_options].keys.join(', ') rescue ""
     # puts(cartToCreate)
-    @cart = FoodCart.create!(cart_to_create)
+    @cart = FoodCart.create!(cart_params)
     flash[:notice] = "#{@cart.name} was successfully created."
     redirect_to root_path
   end
@@ -145,7 +143,10 @@ class CartsController < ApplicationController
     cart_to_update[:opening_time] = Time.parse(cart_params[:opening_time])
     cart_to_update[:closing_time] = Time.parse(cart_params[:closing_time])
     cart_to_update[:top_rated_food] = cart_params[:top_rated_food]
-    cart_to_update[:payment_options] = cart_params[:payment_options].keys.join(', ') rescue ""
+    cart_to_update[:payment_options] = cart_params[:payment_options].keys.join(', ') rescue "NA"
+    if !cart_params[:image].nil?
+      cart_to_update[:image] = cart_params[:image]
+    end
     @cart = FoodCart.find params[:id]
     @cart.update_attributes!(cart_to_update)
     flash[:notice] = "#{@cart.name} was successfully updated."
@@ -165,7 +166,7 @@ class CartsController < ApplicationController
   end
 
   def cart_params
-    params.require(:cart).permit(:name, :location, :coordinates, :menu, :opening_time, :closing_time, :top_rated_food, payment_options:{})
+    params.require(:cart).permit(:name, :location, :coordinates, :menu, :image, :opening_time, :closing_time, :top_rated_food, payment_options:{})
     # params.require(:cart).permit(:name, :location, :menu, :opening_time, :closing_time, :top_rated_food, payment_options:{}, open_days:{}, :coordinates)
   end
 end

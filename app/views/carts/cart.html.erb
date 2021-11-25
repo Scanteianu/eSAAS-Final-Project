@@ -2,6 +2,7 @@
   <link rel="stylesheet" href="../../assets/stylesheets/cart.css">
 <% end %>
 <h2><%= @currentCart[:name]%></h2>
+<%= image_tag @currentCart[:image] if !@currentCart[:image].nil?  %>
 <br>
 Location: <%= @currentCart[:location]%>
 <br>
