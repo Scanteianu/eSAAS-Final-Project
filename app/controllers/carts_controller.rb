@@ -77,7 +77,10 @@ class CartsController < ApplicationController
       end
 
       reviewHash = Hash.new
+      reviewHash[:id] = review[:id]
+      reviewHash[:cart_id] = cartFromDb[:id]
       reviewHash[:username] = currentUser[:name]
+      reviewHash[:email_id] = currentUser[:email_id]
       reviewHash[:rating] = review[:rating]
       reviewHash[:review] = review[:review]
       reviewHash[:createdAt] = review[:created_at]
@@ -103,8 +106,18 @@ class CartsController < ApplicationController
     redirect_to cart_path(@review[:food_cart_id])
   end
 
-  def display_edit_review
-    puts 'editing revieeeeeeeeeeeeeeeew'
+  def edit_review
+    review_hash = Hash.new
+    if session[:username]
+      then
+        user = User.find_by email_id: session[:username]
+      else
+        user = User.find_by_id(1) #todo: this should probably throw an error
+      end
+    review_to_update = Review.find_by_id(params[:id])
+    review_to_update[:rating] = review_params[:rating]
+    review_to_update[:review] = review_params[:review]
+    review_to_update.save
   end
 
   def new

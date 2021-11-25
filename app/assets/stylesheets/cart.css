@@ -2,6 +2,10 @@
     margin-top: 1rem;
 }
 
+.reviewer-avatar-container {
+    display: inline-block;
+}
+
 .reviewer-avatar {
     vertical-align: middle;
     width: 50px;
@@ -12,6 +16,11 @@
     line-height: 50px;
     text-align: center;
     background: #accce6;
+    display: inline-block;
+}
+
+.edit-review-button {
+    margin-left: 1rem;
     display: inline-block;
 }
 
