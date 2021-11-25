@@ -32,16 +32,18 @@ Top rated food: <%= @currentCart[:topRatedFood] %>
     </div>
   <% end %>
 </div>
-<div class="review-container">
-  <%= form_tag cart_review_path(@currentCart), :class => 'form' do %>
-    <%= label :cart_review, :review, 'Write Review', :class => 'col-form-label' %>
-    <%= text_area :cart_review, :review, :class => 'form-control' %>
-    <%= label :cart_review, :rating, 'Rating', :class => 'col-form-label'  %>
-    <%= select :cart_review, :rating, [1,2,3,4,5], {}, {:class => 'form-control col-1'} %>
-    <br/>
-    <%= submit_tag 'Save Changes', :class => 'btn btn-primary' %>
-  <% end %>
-</div>
+<% if @reviewEnabled and !@hasUserWrittenReview %>
+  <div class="review-container">
+    <%= form_tag cart_review_path(@currentCart), :class => 'form' do %>
+      <%= label :cart_review, :review, 'Write Review', :class => 'col-form-label' %>
+      <%= text_area :cart_review, :review, :class => 'form-control' %>
+      <%= label :cart_review, :rating, 'Rating', :class => 'col-form-label'  %>
+      <%= select :cart_review, :rating, [1,2,3,4,5], {}, {:class => 'form-control col-1'} %>
+      <br/>
+      <%= submit_tag 'Save Changes', :class => 'btn btn-primary' %>
+    <% end %>
+  </div>
+<% end %>
 <div>
   <%= link_to 'Edit Cart Details', edit_cart_path, :class => 'btn btn-primary' %>
 </div>

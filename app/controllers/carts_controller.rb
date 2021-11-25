@@ -61,12 +61,23 @@ class CartsController < ApplicationController
     cartToDisplay[:closeHours] = parsed_close_time.in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p")
     @currentCart=cartToDisplay
 
+    # User must be logged in to write review
+    @reviewEnabled = session[:username] != nil ? true : false
+
+    # One review per user
+    @hasUserWrittenReview = false
+
     # Get reviews
     reviewsToDisplay = Array.new
     fetchedReviews = FoodCart.get_all_reviews(index)
     for review in fetchedReviews
+      currentUser = User.find_by_id(review[:user_id])
+      if currentUser[:email_id] == session[:username]
+        @hasUserWrittenReview = true
+      end
+
       reviewHash = Hash.new
-      reviewHash[:username] = User.find_by_id(review[:user_id])[:name]
+      reviewHash[:username] = currentUser[:name]
       reviewHash[:rating] = review[:rating]
       reviewHash[:review] = review[:review]
       reviewHash[:createdAt] = review[:created_at]
@@ -74,7 +85,6 @@ class CartsController < ApplicationController
       reviewsToDisplay.push(reviewHash)
     end
     @currentReviews = reviewsToDisplay
-
   end
 
   def add_review
