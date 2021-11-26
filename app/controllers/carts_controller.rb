@@ -107,7 +107,6 @@ class CartsController < ApplicationController
   end
 
   def edit_review
-    review_hash = Hash.new
     if session[:username]
       then
         user = User.find_by email_id: session[:username]
@@ -118,6 +117,15 @@ class CartsController < ApplicationController
     review_to_update[:rating] = review_params[:rating]
     review_to_update[:review] = review_params[:review]
     review_to_update.save
+
+    # Variable to be used in corresponding js.erb
+    review_hash = Hash.new
+    review_hash[:id] = review_to_update[:id]
+    review_hash[:username] = user[:name]
+    review_hash[:email_id] = user[:email_id]
+    review_hash[:rating] = review_params[:rating]
+    review_hash[:review] = review_params[:review]
+    @updated_review = review_hash
   end
 
   def new

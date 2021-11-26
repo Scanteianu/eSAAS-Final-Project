@@ -22,31 +22,7 @@ Top rated food: <%= @currentCart[:topRatedFood] %>
 <h4 class="review-heading">Reviews</h4>
 <div class="list-of-reviews">
   <% @currentReviews.each do |review| %>
-    <div>
-      <div class="reviewer-avatar-container">
-        <span class="reviewer-avatar"><%= review[:username][0] %></span>
-        <span><%= review[:username] %></span>
-      </div>
-      <%# Edit Button only to be displayed for the author of the review %>
-      <% if review[:email_id] == session[:username] %>
-        <button type="button" class="btn btn-light edit-review-button" data-user="<%= review[:username]%>">
-          <i class="bi bi-pencil-fill"></i> Edit
-        </button>
-      <% end %>
-      <div>Rating: <%= review[:rating] %>/5</div>
-      <p><%= review[:review] %></p>
-    </div>
-    <%# Content to dynamically render when updating a review %>
-    <div class="review-edit-container hidden" data-user="<%= review[:username]%>">
-      <%= form_tag edit_cart_review_path(review), :class => 'form', :remote => true, :method => 'put' do %>
-        <%= label :cart_review, :review, 'Write Review', :class => 'col-form-label' %>
-        <%= text_area :cart_review, :review, :class => 'form-control', :value => review[:review] %>
-        <%= label :cart_review, :rating, 'Rating', :class => 'col-form-label'  %>
-        <%= select :cart_review, :rating, [1,2,3,4,5], {:selected => review[:rating]}, {:class => 'form-control col-1'} %>
-        <br/>
-        <%= submit_tag 'Update Review', :class => 'btn btn-primary' %>
-      <% end %>
-    </div>
+    <%= render "cart_review", review: review %>
   <% end %>
 </div>
 <% if @reviewEnabled and !@hasUserWrittenReview %>
