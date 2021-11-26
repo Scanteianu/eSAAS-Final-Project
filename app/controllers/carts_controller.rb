@@ -47,6 +47,7 @@ class CartsController < ApplicationController
     cartFromDb = FoodCart.find_by_id(index)
     cartToDisplay = Hash.new
 
+    cartToDisplay[:cart_id] = cartFromDb[:id]
     cartToDisplay[:name] = cartFromDb[:name]
     cartToDisplay[:location] = cartFromDb[:location]
     cartToDisplay[:coordinates] = cartFromDb[:coordinates]
@@ -98,8 +99,9 @@ class CartsController < ApplicationController
       else
         user = User.find_by_id(1) #todo: this should probably throw an error
       end
+    
     review_hash[:user_id] = user.id
-    review_hash[:food_cart_id] = params[:id]
+    review_hash[:food_cart_id] = params[:cart_id]
     review_hash[:rating] = review_params[:rating]
     review_hash[:review] = review_params[:review]
     @review = Review.create!(review_hash)
@@ -126,6 +128,22 @@ class CartsController < ApplicationController
     review_hash[:rating] = review_params[:rating]
     review_hash[:review] = review_params[:review]
     @updated_review = review_hash
+  end
+
+  def delete_review
+    found_review = Review.find_by_id(params[:id])
+    review_user = User.find_by_id(found_review[:user_id])
+    begin
+      if (session[:username] and session[:username] == review_user[:email_id])
+        @deleted_review_id = params[:id]
+        @deleted_review_cart = FoodCart.find_by_id(found_review[:food_cart_id])
+        Review.destroy(params[:id])
+      else
+        raise Exception.new "Logged in user can only delete their own review"
+      end
+    rescue => exception
+      puts exception
+    end
   end
 
   def new

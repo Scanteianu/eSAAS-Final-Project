@@ -19,24 +19,15 @@ Owner: <%= @currentCart[:owner] %>
 <br>
 Top rated food: <%= @currentCart[:topRatedFood] %>
 <br>
-<h4 class="review-heading">Reviews</h4>
-<div class="list-of-reviews">
-  <% @currentReviews.each do |review| %>
-    <%= render "cart_review", review: review %>
-  <% end %>
-</div>
-<% if @reviewEnabled and !@hasUserWrittenReview %>
-  <div class="review-container">
-    <%= form_tag add_cart_review_path(@currentCart), :class => 'form' do %>
-      <%= label :cart_review, :review, 'Write Review', :class => 'col-form-label' %>
-      <%= text_area :cart_review, :review, :class => 'form-control' %>
-      <%= label :cart_review, :rating, 'Rating', :class => 'col-form-label'  %>
-      <%= select :cart_review, :rating, [1,2,3,4,5], {}, {:class => 'form-control col-1'} %>
-      <br/>
-      <%= submit_tag 'Save Review', :class => 'btn btn-primary' %>
+<Section class="review-section">
+  <h4 class="review-heading">Reviews</h4>
+  <%= render "initial_cart_review", currentCart: @currentCart, reviewEnabled: @reviewEnabled, hasUserWrittenReview: @hasUserWrittenReview %>
+  <div class="list-of-reviews">
+    <% @currentReviews.each do |review| %>
+      <%= render "cart_review", review: review %>
     <% end %>
   </div>
-<% end %>
+</Section>
 <div>
   <%= link_to 'Edit Cart Details', edit_cart_path, :class => 'btn btn-primary' %>
 </div>

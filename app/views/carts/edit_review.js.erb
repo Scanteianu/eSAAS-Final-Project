@@ -1,5 +1,4 @@
 const updatedReviewElem = document.getElementById('review-<%= @updated_review[:id]%>');
-console.log(updatedReviewElem);
 
 updatedReviewElem.innerHTML = "<%= j render 'carts/cart_review', :review => @updated_review %>";
 

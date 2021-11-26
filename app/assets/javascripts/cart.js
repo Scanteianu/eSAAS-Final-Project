@@ -8,7 +8,7 @@ function editReview(reviewUser) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    let editReviewButtons = document.getElementsByClassName('edit-review-button') 
+    let editReviewButtons = document.getElementsByClassName('edit-review-button');
     Array.prototype.forEach.call(editReviewButtons, editReviewBtn => {
         // Add onclick listener for each edit review button
         editReviewBtn.addEventListener('click', () => {
