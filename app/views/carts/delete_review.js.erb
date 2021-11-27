@@ -2,8 +2,4 @@ const deletedReviewElem = document.getElementById('review-<%= @deleted_review_id
 deletedReviewElem.remove();
 
 // Render initial create review form
-const reviewHeadingElem = document.getElementsByClassName('review-heading')[0];
-const emptyDiv = document.createElement('div');
-emptyDiv.classList.add('initial-cart-review');
-reviewHeadingElem.after(emptyDiv);
-document.getElementsByClassName('initial-cart-review')[0].innerHTML= "<%= j render 'initial_cart_review', :currentCart => @deleted_review_cart, :reviewEnabled => true, :hasUserWrittenReview => false %>";
+$('.review-heading').after("<%= j render 'initial_cart_review', :currentCart => @deleted_review_cart, :reviewEnabled => true, :hasUserWrittenReview => false %>");

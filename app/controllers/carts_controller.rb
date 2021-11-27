@@ -104,8 +104,13 @@ class CartsController < ApplicationController
     review_hash[:food_cart_id] = params[:cart_id]
     review_hash[:rating] = review_params[:rating]
     review_hash[:review] = review_params[:review]
-    @review = Review.create!(review_hash)
-    redirect_to cart_path(@review[:food_cart_id])
+    created_review = Review.create!(review_hash)
+
+    # Remaining review attributes to display client-side
+    review_hash[:id] = created_review[:id]
+    review_hash[:username] = user[:name]
+    review_hash[:email_id] = user[:email_id]
+    @review_to_display = review_hash
   end
 
   def edit_review
