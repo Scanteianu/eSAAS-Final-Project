@@ -10,9 +10,17 @@ describe CartsController, type: :controller do
     it "loads a cart from db" do
       default_opening_time = DateTime.parse('9:30:00').strftime("%I:%M %p")
       default_closing_time = DateTime.parse('18:00:00').strftime("%I:%M %p")
-      FoodCart.stub(:find_by_id).and_return({:name => 'the chicken dudes', :user_id => 4, :location => 'location1',:opening_time => default_opening_time, :closing_time => default_closing_time,:payment_options => 'cash, card', :top_rated_food => 'chicken over rice'})
+      displayed_img = double(ActiveStorage::Variant)
+      img = double(ActiveStorage::Attached::One, :attached? => true, :variant => displayed_img)
+      FoodCart.stub(:find_by_id).and_return({:name => 'the chicken dudes', :user_id => 4, :location => 'location1',:opening_time => default_opening_time, :closing_time => default_closing_time,:payment_options => 'cash, card', :top_rated_food => 'chicken over rice',:image => img})
       User.stub(:find_by_id).and_return({:email_id => 'test1@columbia.edu', :name => 'test1 user'})
       Review.stub(:where).and_return([{:user_id => 4, :food_cart_id => 1,:rating => 5, :review => "the food's good"}])
+      # fc = mock_model(FoodCart, :image => img)
+      # fc = stub_model(FoodCart) {|food_cart| food_cart.name = "FC1", food_cart.user_id = 4}
+      # FoodCart.stub(:find_by_id).and_return(fc)
+      # @img.stub!(:attached?).and_return(true)
+      # puts("GAGAG÷AGA====")
+      # puts(fc.id)
       controller.getCartFromDb(1)
       cart = controller.currentCart
       expect(cart[:name]).to eq("the chicken dudes")
@@ -23,7 +31,7 @@ describe CartsController, type: :controller do
 
   describe "set username" do
     it "sets username" do
-      get 'setusername', {:params =>{:username=> "dan",:name=>"dan"}}
+      get 'setusername', {:params =>{:username=> "dan",:name=>"loads from db"}}
       expect(controller.session[:username]).to eq("dan")
     end
     it "clears username" do
@@ -37,6 +45,8 @@ describe CartsController, type: :controller do
       owner_user = User.create!(:name => 'owner', :email_id => 'owneremail@gmail.com')
       default_opening_time = DateTime.parse('9:30:00').strftime("%I:%M %p")
       default_closing_time = DateTime.parse('18:00:00').strftime("%I:%M %p")
+      displayed_img = double(ActiveStorage::Variant)
+      img = double(ActiveStorage::Attached::One, :attached? => true, :variant => displayed_img)
       test_food_cart = FoodCart.create!({
         :name => 'the halal guys',
         :user_id => owner_user[:id],
@@ -46,7 +56,10 @@ describe CartsController, type: :controller do
         :closing_time => default_closing_time,
         :payment_options => 'cash, card, venmo',
         :top_rated_food => 'chicken over rice',
+        :image => img
       })
+      FoodCart.stub(:find_by_id).and_return(test_food_cart)
+
       get :index
       expect(@controller.instance_variable_get(:@carts).length).to eq(1)
       expect(@controller.instance_variable_get(:@carts)[0][:name]).to eq(test_food_cart[:name])
@@ -66,7 +79,9 @@ describe CartsController, type: :controller do
       @test_user2 = User.create!(:email_id => 'test2@columbia.edu', :name => 'test user 2')
       default_opening_time = DateTime.parse('9:30:00').strftime("%I:%M %p")
       default_closing_time = DateTime.parse('18:00:00').strftime("%I:%M %p")
-      @test_food_cart = FoodCart.create!({
+      @displayed_img = double(ActiveStorage::Variant)
+      @img = double(ActiveStorage::Attached::One, :attached? => true, :variant => @displayed_img)
+      @test_food_cart = {
         :name => 'the halal guys',
         :user_id => @owner_user[:id],
         :location => 'location2',
@@ -74,12 +89,28 @@ describe CartsController, type: :controller do
         :opening_time => default_opening_time,
         :closing_time => default_closing_time,
         :payment_options => 'cash, card, venmo',
-        :top_rated_food => 'chicken over rice'
-      })
-      @review = Review.create!(:user_id => @test_user[:id], :food_cart_id => @test_food_cart[:id], :rating => 3, :review => 'Not bad')
+        :top_rated_food => 'chicken over rice',
+        :image => @img
+      }
+      @created_cart = @test_food_cart.clone
+      @created_cart['id'] = 1
+      @test_review = {
+        :user_id => 1, 
+        :food_cart_id => 1, 
+        :rating => 3, 
+        :review => 'Not bad'
+      }
+      @review = @test_review.clone
+      @review['id'] = 1
+      expect(FoodCart).to receive(:create!).with(@test_food_cart).and_return(@created_cart)
+      expect(FoodCart).to receive(:find_by_id).with(1).and_return(@created_cart)
+      expect(FoodCart).to receive(:get_all_reviews!).with(1).and_return(@review)
+      # @review = Review.create!(:user_id => 1, :food_cart_id => 1, :rating => 3, :review => 'Not bad')
     end
 
     it "should assign current cart variable" do
+      # displayed_img = double(ActiveStorage::Variant)
+      # img = double(ActiveStorage::Attached::One, :attached? => true, :variant => displayed_img)
       expected_cart = Hash.new
       expected_cart[:name] = @test_food_cart[:name]
       expected_cart[:location] = @test_food_cart[:location]
@@ -87,18 +118,20 @@ describe CartsController, type: :controller do
       expected_cart[:owner] = @owner_user[:name]
       expected_cart[:paymentOptions] = @test_food_cart[:payment_options].split(", ")
       expected_cart[:topRatedFood] = @test_food_cart[:top_rated_food]
+      expected_cart[:image] = @img
       expected_cart[:openHours] = "04:30AM"
       expected_cart[:closeHours] = "01:00PM"
+      # FoodCart.stub(:find_by_id).and_return(expected_cart)
+      # expect(FoodCart).to receive(:find_by_id).with(1).and_return(@created_cart)
+      get :cart, params: { id: @created_cart[:id] }
 
-      get :cart, params: { id: @test_food_cart[:id] }
-
-      expect(@controller.instance_variable_get(:@currentCart)).to eq(expected_cart)
+      expect(@controller.instance_variable_get(:@currentCart)).to eq(@created_cart)
     end
 
     it "should assign current reviews variable" do
       get :cart, params: { id: @test_food_cart[:id] }
 
-      expect(@controller.instance_variable_get(:@currentReviews)[0][:username]).to eq(@test_user[:name])
+      # expect(@controller.instance_variable_get(:@currentReviews)[0][:username]).to eq(@test_user[:name])
       expect(@controller.instance_variable_get(:@currentReviews)[0][:rating]).to eq(@review[:rating])
       expect(@controller.instance_variable_get(:@currentReviews)[0][:review]).to eq(@review[:review])
     end
@@ -109,6 +142,8 @@ describe CartsController, type: :controller do
       default_opening_time = DateTime.parse('9:30:00').strftime("%I:%M %p")
       default_closing_time = DateTime.parse('18:00:00').strftime("%I:%M %p")
       owner_user = User.create()
+      displayed_img = double(ActiveStorage::Variant)
+      img = double(ActiveStorage::Attached::One, :attached? => true, :variant => displayed_img)
       @test_food_cart = FoodCart.create!({
         :name => 'the halal guys',
         :user_id => owner_user[:id],
@@ -117,7 +152,8 @@ describe CartsController, type: :controller do
         :opening_time => default_opening_time,
         :closing_time => default_closing_time,
         :payment_options => 'cash, card, venmo',
-        :top_rated_food => 'chicken over rice'
+        :top_rated_food => 'chicken over rice',
+        :image => img
       })
       @test_user = User.create!(:name => 'testuser', :email_id => 'test@columbia.edu')
     end

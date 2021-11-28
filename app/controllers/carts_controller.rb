@@ -27,16 +27,16 @@ class CartsController < ApplicationController
     if params[:username]=="Nil"
       then
       session[:username]=nil
-      puts "user logged out: " + params[:username]
+      # puts "user logged out: " + params[:username]
       render :json => {"setUsername"=>session[:username]}
     else
       session[:username]=params[:username]
       user = User.find_by email_id: params[:username]
       if user == nil
         new_user = User.create(name: params[:name], email_id: params[:username])
-        puts("new user created: "+ new_user.email_id)
+        # puts("new user created: "+ new_user.email_id)
       end
-      puts "request received to set username: " + params[:username]
+      # puts "request received to set username: " + params[:username]
       render :json => {"setUsername"=>session[:username]}
     end
 
@@ -45,7 +45,11 @@ class CartsController < ApplicationController
   attr_accessor :currentCart
   def getCartFromDb(index)
     cartFromDb = FoodCart.find_by_id(index)
+    puts "GAGAGAGAGAGAGA=========================+GAGAGAG"
+    puts cartFromDb[:name]
+    puts cartFromDb[:image].attached?
     cartToDisplay = Hash.new
+    puts "wwwwww=========================+wwwww"
 
     cartToDisplay[:name] = cartFromDb[:name]
     cartToDisplay[:location] = cartFromDb[:location]
@@ -53,8 +57,8 @@ class CartsController < ApplicationController
     cartToDisplay[:owner] = User.find_by_id(cartFromDb[:user_id])[:name] rescue "NA"
     cartToDisplay[:paymentOptions] = listifyPaymentOptions(cartFromDb[:payment_options])
     cartToDisplay[:topRatedFood]= cartFromDb[:top_rated_food]
-    if cartFromDb.image.attached?
-      cartToDisplay[:image] = cartFromDb.image.variant(resize: "320x320")
+    if cartFromDb[:image].attached?
+      cartToDisplay[:image] = cartFromDb[:image].variant(resize: "320x320")
     end
 
     # Convert UTC time to eastern time
