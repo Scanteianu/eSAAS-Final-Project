@@ -199,11 +199,11 @@ class CartsController < ApplicationController
     #   redirect_to root_path
     #   return
     # end
-    cart_params[:opening_time] = Time.parse(cart_params[:opening_time])
-    cart_params[:closing_time] = Time.parse(cart_params[:closing_time])
-    cart_params[:payment_options] = cart_params[:payment_options].keys.join(', ') rescue ""
-    # puts(cartToCreate)
-    @cart = FoodCart.create!(cart_params)
+    cart_to_create = cart_params.clone
+    cart_to_create[:opening_time] = Time.parse(cart_params[:opening_time])
+    cart_to_create[:closing_time] = Time.parse(cart_params[:closing_time])
+    cart_to_create[:payment_options] = cart_params[:payment_options].keys.join(', ') rescue "NA"
+    @cart = FoodCart.create!(cart_to_create)
     flash[:notice] = "#{@cart.name} was successfully created."
     redirect_to root_path
   end
