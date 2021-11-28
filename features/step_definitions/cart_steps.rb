@@ -93,22 +93,6 @@ And /^I post review?/ do
   wait_for_ajax
 end
 
-And /^I edit review with "(.*)"?/ do |value|
-  page.all('.review-edit-container').each do |el|
-    if !el[:class].include? 'hidden'
-      el.find("[name='edit_cart_review[review]']").set(value)
-    end
-  end
-end
-
-And /^I edit review rating with "(.*)"$/ do |value|
-  page.all('.review-edit-container').each do |el|
-    if !el[:class].include? 'hidden'
-      el.find("[name='edit_cart_review[rating]']").select(value)
-    end
-  end
-end
-
 And /^I update review$/ do
   page.all('.review-edit-container').each do |el|
     if !el[:class].include? 'hidden'

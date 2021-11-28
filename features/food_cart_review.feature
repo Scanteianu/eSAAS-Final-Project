@@ -62,8 +62,8 @@ Feature: Give a review to a Food Cart
         And I select "3" from "initial_cart_review[rating]"
         And I post review
         And I edit review
-        And I edit review with "the pita is meh..."
-        And I edit review rating with "2"
+        And I fill in "edit_cart_review[review]" with "the pita is meh..."
+        And I select "2" from "edit_cart_review[rating]"
         And I update review
         Then I should be on the view page for "The Chicken Dudes"
         And I should see "Rating: 2/5"
