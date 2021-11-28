@@ -52,6 +52,12 @@ Then /I should see the user review for "(.*)"/ do |username|
   expect(review_text).to include(found_review.review)
 end
 
+Then /I should see a blue check for "(.*)"/ do |username|
+  formatted_username=username.split(" ").join("-")
+  check = page.find(".review-check-"+formatted_username)
+  expect(check).not_to eq(nil)
+end
+
 When /I view more for "(.*)"/ do |food_cart_name|
   found_food_cart = FoodCart.find_by(name: food_cart_name)
   view_more_food_cart_link = page.find("a[href='/carts/cart/#{found_food_cart.id}']")

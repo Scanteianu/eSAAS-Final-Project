@@ -165,6 +165,32 @@ describe CartsController, type: :controller do
     end
   end
 
+  describe "verify_user" do 
+
+    context "user email is nil" do
+      it "return false" do
+        value=@controller.verify_user(nil)
+        expect(value).to eq(false)
+      end
+    end
+    context "user email is not nil" do
+      context "user email includes columbia.edu or barnard.edu" do
+        it "returns true" do
+          value1=@controller.verify_user("test1@columbia.edu")
+          expect(value1).to eq(true)
+          value2=@controller.verify_user("test1@barnard.edu")
+          expect(value2).to eq(true)
+        end
+      end
+      context "user email does not include columbia.edu or barnard.edu" do
+        it "returns false" do
+          value=@controller.verify_user("test1@gmail.com")
+          expect(value).to eq(false)
+        end
+      end
+    end 
+  end
+  
   describe "edit_review" do
     before(:each) do
       default_opening_time = DateTime.parse('9:30:00').strftime("%I:%M %p")
