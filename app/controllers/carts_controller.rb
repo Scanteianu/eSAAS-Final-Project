@@ -156,6 +156,19 @@ class CartsController < ApplicationController
   def listifyPaymentOptions(paymentOptStr)
     return paymentOptStr.split(", ")
   end
+    
+  def verify_user(user_email)
+    #check if it has columbia.edu or barnard.edu
+    if user_email.nil?
+      return false
+    else
+      if user_email.include? "columbia.edu" or user_email.include? "barnard.edu"
+        return true
+      else
+        return false
+      end
+    end
+  end
 
   private
   # Making "internal" methods private is not required, but is a common practice.
@@ -168,19 +181,6 @@ class CartsController < ApplicationController
   def cart_params
     params.require(:cart).permit(:name, :location, :coordinates, :menu, :opening_time, :closing_time, :top_rated_food, payment_options:{})
     # params.require(:cart).permit(:name, :location, :menu, :opening_time, :closing_time, :top_rated_food, payment_options:{}, open_days:{}, :coordinates)
-  end
-
-  def verify_user(user_email)
-    #check if it has columbia.edu or barnard.edu
-    if user_email.nil?
-      return false
-    else
-      if user_email.include? "columbia.edu" or user_email.include? "barnard.edu"
-        return true
-      else
-        return false
-      end
-    end
   end
   
 end

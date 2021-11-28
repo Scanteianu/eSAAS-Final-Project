@@ -46,6 +46,7 @@ Feature: view cart details
     When I go to the view page for "The Chicken Dudes"
     Then I should see "Reviews"
     And I should see the user review for "test1"
+    And I should see a blue check for "test1"
 
   Scenario: see all the carts
     When I go to the home page
