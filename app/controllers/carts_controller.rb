@@ -39,7 +39,6 @@ class CartsController < ApplicationController
       puts "request received to set username: " + params[:username]
       render :json => {"setUsername"=>session[:username]}
     end
-
   end
 
   attr_accessor :currentCart
@@ -63,7 +62,7 @@ class CartsController < ApplicationController
     @currentCart=cartToDisplay
 
     # User must be logged in to write review
-    @reviewEnabled = session[:username] != nil ? true : false
+    @reviewEnabled = getFromSessionObject(:username) != nil ? true : false
 
     # One review per user
     @hasUserWrittenReview = false
@@ -73,7 +72,7 @@ class CartsController < ApplicationController
     fetchedReviews = FoodCart.get_all_reviews(index)
     for review in fetchedReviews
       currentUser = User.find_by_id(review[:user_id])
-      if currentUser[:email_id] == session[:username]
+      if currentUser[:email_id] == getFromSessionObject(:username)
         @hasUserWrittenReview = true
       end
 
@@ -93,17 +92,17 @@ class CartsController < ApplicationController
 
   def add_review
     review_hash = Hash.new
-    if session[:username]
+    if getFromSessionObject(:username)
       then
-        user = User.find_by email_id: session[:username]
+        user = User.find_by email_id: getFromSessionObject(:username)
       else
         user = User.find_by_id(1) #todo: this should probably throw an error
       end
     
     review_hash[:user_id] = user.id
     review_hash[:food_cart_id] = params[:cart_id]
-    review_hash[:rating] = review_params[:rating]
-    review_hash[:review] = review_params[:review]
+    review_hash[:rating] = initial_review_params[:rating]
+    review_hash[:review] = initial_review_params[:review]
     created_review = Review.create!(review_hash)
 
     # Remaining review attributes to display client-side
@@ -111,18 +110,23 @@ class CartsController < ApplicationController
     review_hash[:username] = user[:name]
     review_hash[:email_id] = user[:email_id]
     @review_to_display = review_hash
+
+    respond_to do |format|
+      format.html { redirect_to cart_path }
+      format.js { render }
+    end
   end
 
   def edit_review
-    if session[:username]
+    if getFromSessionObject(:username)
       then
-        user = User.find_by email_id: session[:username]
+        user = User.find_by email_id: getFromSessionObject(:username)
       else
         user = User.find_by_id(1) #todo: this should probably throw an error
       end
     review_to_update = Review.find_by_id(params[:id])
-    review_to_update[:rating] = review_params[:rating]
-    review_to_update[:review] = review_params[:review]
+    review_to_update[:rating] = edit_review_params[:rating]
+    review_to_update[:review] = edit_review_params[:review]
     review_to_update.save
 
     # Variable to be used in corresponding js.erb
@@ -130,8 +134,8 @@ class CartsController < ApplicationController
     review_hash[:id] = review_to_update[:id]
     review_hash[:username] = user[:name]
     review_hash[:email_id] = user[:email_id]
-    review_hash[:rating] = review_params[:rating]
-    review_hash[:review] = review_params[:review]
+    review_hash[:rating] = edit_review_params[:rating]
+    review_hash[:review] = edit_review_params[:review]
     @updated_review = review_hash
   end
 
@@ -139,7 +143,7 @@ class CartsController < ApplicationController
     found_review = Review.find_by_id(params[:id])
     review_user = User.find_by_id(found_review[:user_id])
     begin
-      if (session[:username] and session[:username] == review_user[:email_id])
+      if (getFromSessionObject(:username) and getFromSessionObject(:username) == review_user[:email_id])
         @deleted_review_id = params[:id]
         @deleted_review_cart = FoodCart.find_by_id(found_review[:food_cart_id])
         Review.destroy(params[:id])
@@ -217,9 +221,13 @@ class CartsController < ApplicationController
   private
   # Making "internal" methods private is not required, but is a common practice.
   # This helps make clear which methods respond to requests, and which ones do not.
-  def review_params
+  def edit_review_params
     # params.require(:review).permit(:user_id, :cart_id, :rating, :review, :release_date)
-    params.require(:cart_review).permit(:review, :rating)
+    params.require(:edit_cart_review).permit(:review, :rating)
+  end
+
+  def initial_review_params
+    params.require(:initial_cart_review).permit(:review, :rating)
   end
 
   def cart_params

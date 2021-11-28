@@ -19,7 +19,11 @@ Given /the following reviews exist/ do |reviews_table|
 end
 
 And /I am logged in/ do
-  post 'setusername', {:username=> "test_email@columbia.edu",:name=>"test_name"}
+  username = "test_email@columbia.edu"
+  post 'setusername', {:username=> username, :name=>"test_name"}
+  sessionMock = Hash.new
+  sessionMock[:username] = username
+  $injectedSession = sessionMock
 end
 
 Then /I should see the user review for "(.*)"/ do |username|
