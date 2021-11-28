@@ -47,6 +47,11 @@ describe CartsController, type: :controller do
         :payment_options => 'cash, card, venmo',
         :top_rated_food => 'chicken over rice',
       })
+      # path = File.join(Rails.root, 'spec', 'controllers', 'test.jpg')
+      test_food_cart.image.attach(io: File.open('spec/controllers/test.jpg'), filename: 'test.jpg', content_type: 'image/jpg')
+      puts ("GAGAGAGA")
+      puts test_food_cart.image.attached?
+      puts "HGHGHGG"
       get :index
       expect(@controller.instance_variable_get(:@carts).length).to eq(1)
       expect(@controller.instance_variable_get(:@carts)[0][:name]).to eq(test_food_cart[:name])
