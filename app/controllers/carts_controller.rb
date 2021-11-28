@@ -102,7 +102,7 @@ class CartsController < ApplicationController
       then
         user = User.find_by email_id: session_username
       else
-        user = User.find_by_id(1) #todo: this should probably throw an error
+        raise Exception.new "User must be logged in to edit their review"
       end
     
     review_hash[:user_id] = user.id
@@ -120,7 +120,7 @@ class CartsController < ApplicationController
 
     respond_to do |format|
       format.html { redirect_to cart_path }
-      format.js { render }
+      format.js
     end
   end
 
@@ -130,7 +130,7 @@ class CartsController < ApplicationController
       then
         user = User.find_by email_id: session_username
       else
-        user = User.find_by_id(1) #todo: this should probably throw an error
+        raise Exception.new "User must be logged in to edit their review"
       end
     review_to_update = Review.find_by_id(params[:id])
     review_to_update[:rating] = edit_review_params[:rating]
@@ -146,6 +146,11 @@ class CartsController < ApplicationController
     review_hash[:rating] = edit_review_params[:rating]
     review_hash[:review] = edit_review_params[:review]
     @updated_review = review_hash
+
+    respond_to do |format|
+      format.html { redirect_to cart_path }
+      format.js
+    end
   end
 
   def delete_review
@@ -161,6 +166,11 @@ class CartsController < ApplicationController
       end
     rescue => exception
       puts exception
+    end
+
+    respond_to do |format|
+      format.html { redirect_to cart_path }
+      format.js
     end
   end
 
