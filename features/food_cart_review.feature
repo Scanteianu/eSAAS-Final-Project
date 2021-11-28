@@ -35,6 +35,7 @@ Feature: Give a review to a Food Cart
         And I should see "I love the chicken over rice"
         And I should see "logged_in_test_name"
         And I should see "test1"
+        And I should only see "2" review(s)
 
     @javascript
     Scenario: Write single review for a food cart
@@ -51,7 +52,8 @@ Feature: Give a review to a Food Cart
         And I should see "the pita is meh"
         And I should see "logged_in_test_name"
         And I should see "test1"
-        And I should not see "Post Review"
+        And I should not see the post review section
+        And I should only see "2" review(s)
 
     @javascript
     Scenario: Edit a review for a food cart
@@ -70,6 +72,7 @@ Feature: Give a review to a Food Cart
         And I should see "the pita is meh..."
         And I should see "logged_in_test_name"
         And I should see "test1"
+        And I should only see "2" review(s)
 
     @javascript
     Scenario: Delete authored review for food cart
@@ -83,9 +86,11 @@ Feature: Give a review to a Food Cart
         Then I should be on the view page for "The Chicken Dudes"
         And I should not see "the pita is meh"
         And I should not see "logged_in_test_name"
-        And I should only see "1" review
+        And I should only see "1" review(s)
+        And I should see the post review section
 
     Scenario: Try writing a review, without signing in, for a food cart
         Given I am on the home page
+        And I am logged out
         When I view more for "The Chicken Dudes"
-        And I should not see "Post Review"
+        And I should not see the post review section

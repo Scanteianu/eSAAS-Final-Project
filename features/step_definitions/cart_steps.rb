@@ -39,6 +39,10 @@ And /I am logged in/ do
   $injectedSession = sessionMock
 end
 
+And /^I am logged out$/ do
+  $injectedSession = nil
+end
+
 Then /I should see the user review for "(.*)"/ do |username|
   found_user = User.find_by(name: username)
   found_review = Review.find_by(user_id: found_user.id)
@@ -110,7 +114,16 @@ And /^I delete review$/ do
   page.find('.delete-review-button').click
 end 
 
-And /I should only see "(.*)" review/ do |num_of_reviews|
+And /^I should only see "(.*)" review\(s\)$/ do |num_of_reviews|
   reviews = page.all('.list-of-reviews > div')
   expect(reviews.length).to eq(num_of_reviews.to_i)
+end
+
+And /^I should(?: (.*))? see the post review section$/ do |not_visible|
+  post_review_section = page.all('.initial-cart-review')
+  if not_visible != nil
+    expect(post_review_section.length).to eq(0)
+  else
+    expect(post_review_section).not_to eq(1)
+  end
 end
