@@ -1,2 +1,9 @@
 $('.list-of-reviews').append("<%= j render 'carts/cart_review', :review => @review_to_display %>");
+
+// Add onclick listender to edit button for newly inserted review
+const editReviewBtn = document.getElementsByClassName('edit-review-button')[0];
+editReviewBtn.addEventListener('click', () => {
+    editReview(editReviewBtn['dataset'].user);
+});
+
 $('.initial-cart-review').remove();

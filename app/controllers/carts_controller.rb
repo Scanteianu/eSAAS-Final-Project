@@ -62,7 +62,8 @@ class CartsController < ApplicationController
     @currentCart=cartToDisplay
 
     # User must be logged in to write review
-    @reviewEnabled = getFromSessionObject(:username) != nil ? true : false
+    session_username = getFromSessionObject(:username)
+    @reviewEnabled = session_username != nil ? true : false
 
     # One review per user
     @hasUserWrittenReview = false
@@ -72,7 +73,7 @@ class CartsController < ApplicationController
     fetchedReviews = FoodCart.get_all_reviews(index)
     for review in fetchedReviews
       currentUser = User.find_by_id(review[:user_id])
-      if currentUser[:email_id] == getFromSessionObject(:username)
+      if currentUser[:email_id] == session_username
         @hasUserWrittenReview = true
       end
 
@@ -81,6 +82,7 @@ class CartsController < ApplicationController
       reviewHash[:cart_id] = cartFromDb[:id]
       reviewHash[:username] = currentUser[:name]
       reviewHash[:email_id] = currentUser[:email_id]
+      reviewHash[:hasReadWriteAccess] = currentUser[:email_id] == session_username
       reviewHash[:rating] = review[:rating]
       reviewHash[:review] = review[:review]
       reviewHash[:createdAt] = review[:created_at]
@@ -92,9 +94,10 @@ class CartsController < ApplicationController
 
   def add_review
     review_hash = Hash.new
-    if getFromSessionObject(:username)
+    session_username = getFromSessionObject(:username)
+    if session_username
       then
-        user = User.find_by email_id: getFromSessionObject(:username)
+        user = User.find_by email_id: session_username
       else
         user = User.find_by_id(1) #todo: this should probably throw an error
       end
@@ -103,12 +106,13 @@ class CartsController < ApplicationController
     review_hash[:food_cart_id] = params[:cart_id]
     review_hash[:rating] = initial_review_params[:rating]
     review_hash[:review] = initial_review_params[:review]
-    created_review = Review.create!(review_hash)
+    created_review = User.create_review(review_hash[:user_id], review_hash[:food_cart_id], review_hash[:rating], review_hash[:review])
 
     # Remaining review attributes to display client-side
     review_hash[:id] = created_review[:id]
     review_hash[:username] = user[:name]
     review_hash[:email_id] = user[:email_id]
+    review_hash[:hasReadWriteAccess] = user[:email_id] == session_username
     @review_to_display = review_hash
 
     respond_to do |format|
@@ -118,9 +122,10 @@ class CartsController < ApplicationController
   end
 
   def edit_review
-    if getFromSessionObject(:username)
+    session_username = getFromSessionObject(:username)
+    if session_username
       then
-        user = User.find_by email_id: getFromSessionObject(:username)
+        user = User.find_by email_id: session_username
       else
         user = User.find_by_id(1) #todo: this should probably throw an error
       end
@@ -134,6 +139,7 @@ class CartsController < ApplicationController
     review_hash[:id] = review_to_update[:id]
     review_hash[:username] = user[:name]
     review_hash[:email_id] = user[:email_id]
+    review_hash[:hasReadWriteAccess] = user[:email_id] == session_username
     review_hash[:rating] = edit_review_params[:rating]
     review_hash[:review] = edit_review_params[:review]
     @updated_review = review_hash
@@ -146,7 +152,7 @@ class CartsController < ApplicationController
       if (getFromSessionObject(:username) and getFromSessionObject(:username) == review_user[:email_id])
         @deleted_review_id = params[:id]
         @deleted_review_cart = FoodCart.find_by_id(found_review[:food_cart_id])
-        Review.destroy(params[:id])
+        User.delete_review(params[:id])
       else
         raise Exception.new "Logged in user can only delete their own review"
       end

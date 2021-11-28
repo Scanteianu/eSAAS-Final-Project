@@ -4,7 +4,7 @@
     <span><%= review[:username] %></span>
     </div>
     <%# Edit Button only to be displayed for the author of the review %>
-    <% if review[:email_id] == session[:username] %>
+    <% if review[:hasReadWriteAccess] %>
         <button type="button" class="btn btn-light edit-review-button" data-user="<%= review[:username]%>">
             <i class="bi bi-pencil-fill"></i> Edit
         </button>
@@ -14,7 +14,7 @@
     <p><%= review[:review] %></p>
     <%# Content to dynamically render when updating a review %>
     <div class="review-edit-container hidden" data-user="<%= review[:username]%>">
-    <%= form_tag edit_cart_review_path(review), :class => 'form', :remote => true, :method => 'put' do %>
+    <%= form_tag edit_cart_review_path(review), :class => 'form', :remote => true, :method => 'put', :format => :js do %>
         <%= label :edit_cart_review, :review, 'Write Review', :class => 'col-form-label' %>
         <%= text_area :edit_cart_review, :review, :class => 'form-control', :value => review[:review] %>
         <%= label :edit_cart_review, :rating, 'Rating', :class => 'col-form-label'  %>

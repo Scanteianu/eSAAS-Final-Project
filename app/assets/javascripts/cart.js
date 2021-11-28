@@ -3,6 +3,8 @@ function editReview(reviewUser) {
     Array.prototype.forEach.call(hiddenReviewContainer, hiddenReview => {
         if (hiddenReview['dataset'].user.includes(reviewUser)) {
             hiddenReview.classList.remove('hidden');
+            // hiddenReview.querySelector("[name='edit_cart_review[review]']").disabled = false;
+            // hiddenReview.querySelector("[name='edit_cart_review[rating]']").disabled = false;
         }
     });
 }
