@@ -81,6 +81,7 @@ describe CartsController, type: :controller do
 
     it "should assign current cart variable" do
       expected_cart = Hash.new
+      expected_cart[:cart_id] = @test_food_cart[:id]
       expected_cart[:name] = @test_food_cart[:name]
       expected_cart[:location] = @test_food_cart[:location]
       expected_cart[:coordinates] = @test_food_cart[:coordinates]
@@ -122,26 +123,36 @@ describe CartsController, type: :controller do
       @test_user = User.create!(:name => 'testuser', :email_id => 'test@columbia.edu')
     end
 
-    it "should create the review successfully" do
+    it "should not create the review without login" do
       # food cart id must match one currently in DB
-      post :add_review, params: { id: 1, cart_review: { review: 'review text', rating: 1 } }
-      # current user id param is hardcoded in controller and should be dynamic after adding user auth
-      fetched_review = Review.find_by(:food_cart_id => @test_food_cart[:id], :user_id => 1)
-      expect(@controller.instance_variable_get(:@review)).to eq(fetched_review)
+      expect {
+          post :add_review, params: { cart_id: @test_food_cart[:id], id: 1, initial_cart_review: { review: 'review text', rating: 1 } }
+      }.to raise_error(Exception)
     end
 
     it "should create the review successfully with login" do
+      review_text = 'review text'
+      review_rating = "1"
+      expected_review_hash = Hash.new
+      expected_review_hash[:email_id] = @test_user[:email_id]
+      expected_review_hash[:food_cart_id] = @test_food_cart[:id].to_s
+      expected_review_hash[:hasReadWriteAccess] = true
+      expected_review_hash[:id] = 1
+      expected_review_hash[:rating] = review_rating
+      expected_review_hash[:review] = review_text
+      expected_review_hash[:user_id] = @test_user[:id]
+      expected_review_hash[:username] = @test_user[:name]
+
       # food cart id must match one currently in DB
-      get 'setusername', {:params =>{:username=> "dan",:name=>"dan"}}
-      post :add_review, params: { id: 1, cart_review: { review: 'review text', rating: 1 } }
-      user = User.find_by(:name => 'dan')
-      # current user id param is hardcoded in controller and should be dynamic after adding user auth
-      fetched_review = Review.find_by(:food_cart_id => @test_food_cart[:id], :user_id => user.id)
-      expect(@controller.instance_variable_get(:@review)).to eq(fetched_review)
+      get 'setusername', :params =>{ :username => @test_user[:email_id], :name => @test_user[:name] }
+      post :add_review, params: { cart_id: @test_food_cart[:id], id: 1, initial_cart_review: { review: review_text, rating: review_rating } }
+
+      expect(@controller.instance_variable_get(:@review_to_display)).to eq(expected_review_hash)
     end
 
     it "should redirect to the cart path" do
-      post :add_review, params: { id: 1, cart_review: { review: 'review text', rating: 1 } }
+      get 'setusername', :params =>{ :username => @test_user[:email_id], :name => @test_user[:name] }
+      post :add_review, params: { cart_id: @test_food_cart[:id], id: 1, initial_cart_review: { review: 'review text', rating: 1 } }
 
       expect(response).to redirect_to(cart_path(1))
     end
