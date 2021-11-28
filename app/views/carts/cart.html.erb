@@ -1,7 +1,5 @@
-<% content_for :cart do %>
-  <link rel="stylesheet" href="../../assets/stylesheets/cart.css">
-<% end %>
 <h2><%= @currentCart[:name]%></h2>
+<%= image_tag @currentCart[:image] if !@currentCart[:image].nil?  %>
 <br>
 Location: <%= @currentCart[:location]%>
 <br>
@@ -19,35 +17,15 @@ Owner: <%= @currentCart[:owner] %>
 <br>
 Top rated food: <%= @currentCart[:topRatedFood] %>
 <br>
-<h4 class="review-heading">Reviews</h4>
-<div class="list-of-reviews">
-  <% @currentReviews.each do |review| %>
-    <div>
-      <div class="reviewer-avatar-container">
-        <span class="reviewer-avatar"><%= review[:username][0] %></span>
-        <span><%= review[:username] %></span>
-        <% if review[:is_verified]%>
-        <svg class="review-check-<%= review[:username].split(" ").join("-") %>" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#ACCCE6" class="bi bi-check-circle-fill" viewBox="0 0 16 16">
-        <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
-        </svg>
-        <% end %>
-
-      </div>
-      <div>Rating: <%= review[:rating] %>/5</div>
-      <p><%= review[:review] %></p>
-    </div>
-  <% end %>
-</div>
-<div class="review-container">
-  <%= form_tag cart_review_path(@currentCart), :class => 'form' do %>
-    <%= label :cart_review, :review, 'Write Review', :class => 'col-form-label' %>
-    <%= text_area :cart_review, :review, :class => 'form-control' %>
-    <%= label :cart_review, :rating, 'Rating', :class => 'col-form-label'  %>
-    <%= select :cart_review, :rating, [1,2,3,4,5], {}, {:class => 'form-control col-1'} %>
-    <br/>
-    <%= submit_tag 'Save Changes', :class => 'btn btn-primary' %>
-  <% end %>
-</div>
+<Section class="review-section">
+  <h4 class="review-heading">Reviews</h4>
+  <%= render "initial_cart_review", currentCart: @currentCart, reviewEnabled: @reviewEnabled, hasUserWrittenReview: @hasUserWrittenReview %>
+  <div class="list-of-reviews">
+    <% @currentReviews.each do |review| %>
+      <%= render "cart_review", review: review %>
+    <% end %>
+  </div>
+</Section>
 <div>
   <%= link_to 'Edit Cart Details', edit_cart_path, :class => 'btn btn-primary' %>
 </div>

@@ -33,17 +33,6 @@ RSpec.describe User, type: :model do
     end
   end
 
-  describe "reviews_by_me" do
-    it 'gets all reviews written by the user' do
-      reviews = User.reviews_by_me(@test_user[:id])
-      
-      expect(reviews.length()).to eq(1)
-      expect(reviews[0][:user_id]).to eq(@test_user[:id])
-      expect(reviews[0][:rating]).to eq(@review[:rating])
-      expect(reviews[0][:review]).to eq(@review[:review])
-    end
-  end
-
   describe "delete_reviews" do
     it 'deletes the review successfully' do
       User.delete_review(@review[:id])

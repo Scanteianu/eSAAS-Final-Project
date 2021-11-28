@@ -1,6 +1,6 @@
 <h2>Edit Cart Details</h2>
 
-<%= form_tag submit_update_path, :class => 'form' do %>
+<%= form_tag submit_update_path, :class => 'form' ,multipart: true do %>
   <%= label :cart, :name, 'Name', :class => 'col-form-label' %>
   <%= text_field :cart,:name, :value => @cart[:name], :class => 'form-control',required: true %>
   <%= label :cart, :location, 'Location', :class => 'col-form-label' %>
@@ -28,6 +28,8 @@
       <%= check_box_tag "cart[open_days[#{day}]]", "1", @open_on_days.include?(day), class: 'form-check-input' %>
     </div>
   <% end %>
+  <%= label :cart, :image, 'Cart picture', :class => 'col-form-label' %>
+  <%= file_field :cart, :image, :class => 'form-control', accept: 'image/jpeg,image/jpg, image/png' %>
   <br/>
   <%= submit_tag 'Save Changes', :class => 'btn btn-primary' %>
   <%= link_to 'Cancel', root_path, :class => 'btn btn-secondary' %>

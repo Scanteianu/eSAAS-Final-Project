@@ -1,3 +1,16 @@
+module WaitForAjax
+  def wait_for_ajax
+    Timeout.timeout(Capybara.default_max_wait_time) do
+      loop until finished_all_ajax_requests?
+    end
+  end
+
+  def finished_all_ajax_requests?
+    page.evaluate_script('jQuery.active').zero?
+  end
+end
+World(WaitForAjax)
+
 Given /the following carts exist/ do |carts_table|
   carts_table.hashes.each do |cart|
     cart['opening_time']=DateTime.parse(cart['opening_time']).strftime("%I:%M %p")
@@ -19,7 +32,15 @@ Given /the following reviews exist/ do |reviews_table|
 end
 
 And /I am logged in/ do
-  post 'setusername', {:username=> "test_email@columbia.edu",:name=>"test_name"}
+  username = "logged_in_test_user@columbia.edu"
+  post 'setusername', {:username=> username, :name=>"logged_in_test_name"}
+  sessionMock = Hash.new
+  sessionMock[:username] = username
+  $injectedSession = sessionMock
+end
+
+And /^I am logged out$/ do
+  $injectedSession = nil
 end
 
 Then /I should see the user review for "(.*)"/ do |username|
@@ -74,5 +95,41 @@ Then /I should(?: (.*))? see "(.*)" card highlighted/ do |not_visible, food_cart
      expect(marker_class).not_to include(highlighted_card_class)
   else
     expect(marker_class).to include(highlighted_card_class)
+  end
+end
+
+And /^I post review?/ do
+  click_button('Post Review')
+  wait_for_ajax
+end
+
+And /^I update review$/ do
+  page.all('.review-edit-container').each do |el|
+    if !el[:class].include? 'hidden'
+      el.find("[value='Update Review']").click
+      wait_for_ajax
+    end
+  end
+end
+
+And /^I edit review$/ do
+  page.find('.edit-review-button').click
+end
+
+And /^I delete review$/ do
+  page.find('.delete-review-button').click
+end 
+
+And /^I should only see "(.*)" review\(s\)$/ do |num_of_reviews|
+  reviews = page.all('.list-of-reviews > div')
+  expect(reviews.length).to eq(num_of_reviews.to_i)
+end
+
+And /^I should(?: (.*))? see the post review section$/ do |not_visible|
+  post_review_section = page.all('.initial-cart-review')
+  if not_visible != nil
+    expect(post_review_section.length).to eq(0)
+  else
+    expect(post_review_section).not_to eq(1)
   end
 end

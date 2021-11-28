@@ -19,5 +19,12 @@ class ApplicationController < ActionController::Base
       end
     end
   end
+  
+  def getFromSessionObject(param)
+    if $injectedSession
+      return $injectedSession[param]
+    end
+    return session[param]
+  end
 end
 

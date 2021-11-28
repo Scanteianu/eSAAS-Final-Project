@@ -1,6 +1,6 @@
 <h2>Add new cart</h2>
 
-<%= form_tag create_cart_path, :class => 'form' do %>
+<%= form_tag create_cart_path, :class => 'form',multipart: true do%>
   <%= label :cart, :name, 'Name', :class => 'col-form-label' %>
   <%= text_field :cart, :name, :class => 'form-control', required: true %>
   <%= label :cart, :location, 'Address', :class => 'col-form-label' %>
@@ -28,6 +28,8 @@
       <%= check_box_tag "cart[open_days[#{day}]]", "1", true, class: 'form-check-input' %>
     </div>
   <% end %>
+  <%= label :cart, :image, 'Cart picture', :class => 'col-form-label' %>
+  <%= file_field :cart, :image, :class => 'form-control', accept: 'image/jpeg,image/jpg, image/png' %>
   <br/>
   <%= submit_tag 'Add Cart', :class => 'btn btn-primary' %>
   <%= link_to 'Cancel', root_path, :class => 'btn btn-secondary' %>

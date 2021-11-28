@@ -1,0 +1,5 @@
+const deletedReviewElem = document.getElementById('review-<%= @deleted_review_id%>');
+deletedReviewElem.remove();
+
+// Render initial create review form
+$('.review-heading').after("<%= j render 'initial_cart_review', :currentCart => @deleted_review_cart, :reviewEnabled => true, :hasUserWrittenReview => false %>");
