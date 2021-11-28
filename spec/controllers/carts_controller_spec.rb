@@ -96,6 +96,13 @@ describe CartsController, type: :controller do
       expect(@controller.instance_variable_get(:@currentCart)).to eq(expected_cart)
     end
 
+    it "should assign hasUserWrittenReview variable" do
+      get 'setusername', :params =>{ :username => @test_user[:email_id], :name => @test_user[:name] }
+      get :cart, params: { id: @test_food_cart[:id] }
+
+      expect(@controller.instance_variable_get(:@hasUserWrittenReview)).to eq(true)
+    end
+
     it "should assign current reviews variable" do
       get :cart, params: { id: @test_food_cart[:id] }
 
@@ -155,6 +162,116 @@ describe CartsController, type: :controller do
       post :add_review, params: { cart_id: @test_food_cart[:id], id: 1, initial_cart_review: { review: 'review text', rating: 1 } }
 
       expect(response).to redirect_to(cart_path(1))
+    end
+  end
+
+  describe "edit_review" do
+    before(:each) do
+      default_opening_time = DateTime.parse('9:30:00').strftime("%I:%M %p")
+      default_closing_time = DateTime.parse('18:00:00').strftime("%I:%M %p")
+      owner_user = User.create()
+      @test_food_cart = FoodCart.create!({
+        :name => 'the halal guys',
+        :user_id => owner_user[:id],
+        :location => 'location2',
+        :coordinates => '10, 20',
+        :opening_time => default_opening_time,
+        :closing_time => default_closing_time,
+        :payment_options => 'cash, card, venmo',
+        :top_rated_food => 'chicken over rice'
+      })
+      @test_user = User.create!(:name => 'testuser', :email_id => 'test@columbia.edu')
+      @test_review = User.create_review(@test_user[:id], @test_food_cart[:id], 3, 'the food was meh')
+    end
+
+    it "should not update the review without login" do
+      # food cart id must match one currently in DB
+      expect {
+          post :edit_review, params: { cart_id: @test_food_cart[:id], id: @test_review[:id], edit_cart_review: { review: 'the food was meh...', rating: 2 } }
+      }.to raise_error(Exception)
+    end
+
+    it "should update the review successfully with login" do
+      review_text = 'the food was meh...'
+      review_rating = "2"
+      expected_review_hash = Hash.new
+      expected_review_hash[:email_id] = @test_user[:email_id]
+      expected_review_hash[:hasReadWriteAccess] = true
+      expected_review_hash[:id] = 1
+      expected_review_hash[:rating] = review_rating
+      expected_review_hash[:review] = review_text
+      expected_review_hash[:username] = @test_user[:name]
+
+      # food cart id must match one currently in DB
+      get 'setusername', :params =>{ :username => @test_user[:email_id], :name => @test_user[:name] }
+      post :edit_review, params: { cart_id: @test_food_cart[:id], id: @test_review[:id], edit_cart_review: { review: review_text, rating: review_rating } }
+
+      expect(@controller.instance_variable_get(:@updated_review)).to eq(expected_review_hash)
+    end
+  end
+
+  describe "delete_review" do
+    before(:each) do
+      default_opening_time = DateTime.parse('9:30:00').strftime("%I:%M %p")
+      default_closing_time = DateTime.parse('18:00:00').strftime("%I:%M %p")
+      owner_user = User.create()
+      @test_food_cart = FoodCart.create!({
+        :name => 'the halal guys',
+        :user_id => owner_user[:id],
+        :location => 'location2',
+        :coordinates => '10, 20',
+        :opening_time => default_opening_time,
+        :closing_time => default_closing_time,
+        :payment_options => 'cash, card, venmo',
+        :top_rated_food => 'chicken over rice'
+      })
+      @test_user = User.create!(:name => 'testuser', :email_id => 'test@columbia.edu')
+      @test_review = User.create_review(@test_user[:id], @test_food_cart[:id], 3, 'the food was meh')
+    end
+
+    it "should not delete the review without login" do
+      # food cart id must match one currently in DB
+      expect {
+          post :delete_review, params: { cart_id: @test_food_cart[:id], id: @test_review[:id], edit_cart_review: { review: 'the food was meh...', rating: 2 } }
+      }.to raise_error(Exception)
+    end
+
+    it "should set deleted review Id successfully with login" do
+      # food cart id must match one currently in DB
+      get 'setusername', :params =>{ :username => @test_user[:email_id], :name => @test_user[:name] }
+      post :delete_review, params: { cart_id: @test_food_cart[:id], id: @test_review[:id] }
+
+      expect(@controller.instance_variable_get(:@deleted_review_id)).to eq(@test_review[:id].to_s)
+    end
+
+    it "should set deleted review cart successfully with login" do
+      # food cart id must match one currently in DB
+      get 'setusername', :params =>{ :username => @test_user[:email_id], :name => @test_user[:name] }
+      post :delete_review, params: { cart_id: @test_food_cart[:id], id: @test_review[:id] }
+
+      deleted_review_cart = FoodCart.find_by_id(@test_review[:id])
+
+      expect(@controller.instance_variable_get(:@deleted_review_cart)).to eq(deleted_review_cart)
+    end
+
+    it "should create the review successfully with login" do
+      review_text = 'the food was meh...'
+      review_rating = "2"
+      expected_review_hash = Hash.new
+      expected_review_hash[:email_id] = @test_user[:email_id]
+      expected_review_hash[:hasReadWriteAccess] = true
+      expected_review_hash[:id] = 1
+      expected_review_hash[:rating] = review_rating
+      expected_review_hash[:review] = review_text
+      expected_review_hash[:username] = @test_user[:name]
+
+      # food cart id must match one currently in DB
+      get 'setusername', :params =>{ :username => @test_user[:email_id], :name => @test_user[:name] }
+      post :delete_review, params: { cart_id: @test_food_cart[:id], id: @test_review[:id] }
+
+      deleted_review = Review.find_by_id(@test_review[:id])
+
+      expect(deleted_review).to eq(nil)
     end
   end
 
