@@ -8,11 +8,6 @@ class User < ActiveRecord::Base
             :rating => rating, :review => review_string)
     end
 
-    def self.reviews_by_me(user_id)
-        #TODO for ankita: implement argument sanity check
-        Review.where(:user_id => user_id)
-    end
-
     def self.delete_review(review_id)
         if review_id
             Review.find(review_id).destroy

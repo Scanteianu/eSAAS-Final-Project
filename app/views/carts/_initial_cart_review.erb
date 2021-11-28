@@ -1,0 +1,12 @@
+<% if reviewEnabled and !hasUserWrittenReview %>
+  <div class="initial-cart-review review-container">
+    <%= form_tag add_cart_review_path(currentCart), :class => 'form', :remote => true, :method => "post", :format => :js do %>
+      <%= label :initial_cart_review, :review, 'Write Review', :class => 'col-form-label' %>
+      <%= text_area :initial_cart_review, :review, :class => 'form-control' %>
+      <%= label :initial_cart_review, :rating, 'Rating', :class => 'col-form-label'  %>
+      <%= select :initial_cart_review, :rating, [1,2,3,4,5], {}, {:class => 'form-control col-1'} %>
+      <br/>
+      <%= submit_tag 'Post Review', :class => 'btn btn-primary' %>
+    <% end %>
+  </div>
+<% end %>

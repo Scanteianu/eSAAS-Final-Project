@@ -39,7 +39,6 @@ class CartsController < ApplicationController
       puts "request received to set username: " + params[:username]
       render :json => {"setUsername"=>session[:username]}
     end
-
   end
 
   attr_accessor :currentCart
@@ -47,6 +46,7 @@ class CartsController < ApplicationController
     cartFromDb = FoodCart.find_by_id(index)
     cartToDisplay = Hash.new
 
+    cartToDisplay[:cart_id] = cartFromDb[:id]
     cartToDisplay[:name] = cartFromDb[:name]
     cartToDisplay[:location] = cartFromDb[:location]
     cartToDisplay[:coordinates] = cartFromDb[:coordinates]
@@ -64,12 +64,28 @@ class CartsController < ApplicationController
     cartToDisplay[:closeHours] = parsed_close_time.in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p")
     @currentCart=cartToDisplay
 
+    # User must be logged in to write review
+    session_username = getFromSessionObject(:username)
+    @reviewEnabled = session_username != nil ? true : false
+
+    # One review per user
+    @hasUserWrittenReview = false
+
     # Get reviews
     reviewsToDisplay = Array.new
     fetchedReviews = FoodCart.get_all_reviews(index)
     for review in fetchedReviews
+      currentUser = User.find_by_id(review[:user_id])
+      if currentUser[:email_id] == session_username
+        @hasUserWrittenReview = true
+      end
+
       reviewHash = Hash.new
-      reviewHash[:username] = User.find_by_id(review[:user_id])[:name]
+      reviewHash[:id] = review[:id]
+      reviewHash[:cart_id] = cartFromDb[:id]
+      reviewHash[:username] = currentUser[:name]
+      reviewHash[:email_id] = currentUser[:email_id]
+      reviewHash[:hasReadWriteAccess] = currentUser[:email_id] == session_username
       reviewHash[:rating] = review[:rating]
       reviewHash[:review] = review[:review]
       reviewHash[:createdAt] = review[:created_at]
@@ -77,23 +93,75 @@ class CartsController < ApplicationController
       reviewsToDisplay.push(reviewHash)
     end
     @currentReviews = reviewsToDisplay
-
   end
 
   def add_review
     review_hash = Hash.new
-    if session[:username]
+    session_username = getFromSessionObject(:username)
+    if session_username
       then
-        user = User.find_by email_id: session[:username]
+        user = User.find_by email_id: session_username
       else
         user = User.find_by_id(1) #todo: this should probably throw an error
       end
+    
     review_hash[:user_id] = user.id
-    review_hash[:food_cart_id] = params[:id]
-    review_hash[:rating] = review_params[:rating]
-    review_hash[:review] = review_params[:review]
-    @review = Review.create!(review_hash)
-    redirect_to cart_path(@review[:food_cart_id])
+    review_hash[:food_cart_id] = params[:cart_id]
+    review_hash[:rating] = initial_review_params[:rating]
+    review_hash[:review] = initial_review_params[:review]
+    created_review = User.create_review(review_hash[:user_id], review_hash[:food_cart_id], review_hash[:rating], review_hash[:review])
+
+    # Remaining review attributes to display client-side
+    review_hash[:id] = created_review[:id]
+    review_hash[:username] = user[:name]
+    review_hash[:email_id] = user[:email_id]
+    review_hash[:hasReadWriteAccess] = user[:email_id] == session_username
+    @review_to_display = review_hash
+
+    respond_to do |format|
+      format.html { redirect_to cart_path }
+      format.js { render }
+    end
+  end
+
+  def edit_review
+    session_username = getFromSessionObject(:username)
+    if session_username
+      then
+        user = User.find_by email_id: session_username
+      else
+        user = User.find_by_id(1) #todo: this should probably throw an error
+      end
+    review_to_update = Review.find_by_id(params[:id])
+    review_to_update[:rating] = edit_review_params[:rating]
+    review_to_update[:review] = edit_review_params[:review]
+    review_to_update.save
+
+    # Variable to be used in corresponding js.erb
+    review_hash = Hash.new
+    review_hash[:id] = review_to_update[:id]
+    review_hash[:username] = user[:name]
+    review_hash[:email_id] = user[:email_id]
+    review_hash[:hasReadWriteAccess] = user[:email_id] == session_username
+    review_hash[:rating] = edit_review_params[:rating]
+    review_hash[:review] = edit_review_params[:review]
+    @updated_review = review_hash
+  end
+
+  def delete_review
+    found_review = Review.find_by_id(params[:id])
+    review_user = User.find_by_id(found_review[:user_id])
+    begin
+      if (getFromSessionObject(:username) and getFromSessionObject(:username) == review_user[:email_id])
+        @deleted_review_id = params[:id]
+        @deleted_review_cart = FoodCart.find_by_id(found_review[:food_cart_id])
+        User.delete_review(params[:id])
+      else
+        raise Exception.new "Logged in user can only delete their own review"
+      end
+    rescue => exception
+      puts exception
+    end
   end
 
   def new
@@ -160,9 +228,13 @@ class CartsController < ApplicationController
   private
   # Making "internal" methods private is not required, but is a common practice.
   # This helps make clear which methods respond to requests, and which ones do not.
-  def review_params
+  def edit_review_params
     # params.require(:review).permit(:user_id, :cart_id, :rating, :review, :release_date)
-    params.require(:cart_review).permit(:review, :rating)
+    params.require(:edit_cart_review).permit(:review, :rating)
+  end
+
+  def initial_review_params
+    params.require(:initial_cart_review).permit(:review, :rating)
   end
 
   def cart_params

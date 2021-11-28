@@ -1,0 +1,6 @@
+const updatedReviewElem = document.getElementById('review-<%= @updated_review[:id]%>');
+
+updatedReviewElem.innerHTML = "<%= j render 'carts/cart_review', :review => @updated_review %>";
+
+const editReviewBtn = updatedReviewElem.querySelector('.edit-review-button');
+editReviewBtn.addEventListener('click', () => editReview(editReviewBtn['dataset'].user));
