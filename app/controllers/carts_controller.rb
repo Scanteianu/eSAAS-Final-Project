@@ -211,13 +211,13 @@ class CartsController < ApplicationController
 
 
   def create
-    # session_username = getFromSessionObject(:username)
-    # if session_username == nil
-    # # if session[:username] == nil
-    #   flash[:notice] = "User must login to create a cart"
-    #   redirect_to root_path
-    #   return
-    # end
+    session_username = getFromSessionObject(:username)
+    if session_username == nil
+    # if session[:username] == nil
+      flash[:notice] = "User must login to create a cart"
+      redirect_to root_path
+      return
+    end
     cart_to_create = cart_params.clone
     cart_to_create[:opening_time] = Time.parse(cart_params[:opening_time])
     cart_to_create[:closing_time] = Time.parse(cart_params[:closing_time])
@@ -228,13 +228,13 @@ class CartsController < ApplicationController
   end
 
   def update
-    # session_username = getFromSessionObject(:username)
-    # if session_username == nil
-    # # if session[:username] == nil
-    #   flash[:notice] = "User must login to edit a cart"
-    #   redirect_to cart_path(params[:id])
-    #   return
-    # end
+    session_username = getFromSessionObject(:username)
+    if session_username == nil
+    # if session[:username] == nil
+      flash[:notice] = "User must login to edit a cart"
+      redirect_to cart_path(params[:id])
+      return
+    end
     cart_to_update = Hash.new
     cart_to_update[:name] = cart_params[:name]
     cart_to_update[:location] = cart_params[:location]

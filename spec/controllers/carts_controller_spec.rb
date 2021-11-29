@@ -311,7 +311,10 @@ describe CartsController, type: :controller do
   end
 
   describe "upsert cart" do
-
+    before(:context) do
+      test_username = "test@columbia.edu"
+      $injectedSession = { :username => test_username }
+    end
     it "create a new cart" do
       get :new
       expected_cart = Hash.new
@@ -369,6 +372,9 @@ describe CartsController, type: :controller do
       expect(modified_cart.payment_options).to eq("Cash")
       expect(modified_cart.image.attached?).to eq(true)
     end
-
+    
+    after(:context) do
+      $injectedSession = nil
+    end
   end
 end
