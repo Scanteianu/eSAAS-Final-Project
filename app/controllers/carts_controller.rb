@@ -187,6 +187,11 @@ class CartsController < ApplicationController
   end
 
   def edit
+    if session[:username] == nil
+      flash[:notice] = "User must login to edit a cart"
+      redirect_to cart_path(params[:id])
+      return
+    end
     @cart = FoodCart.find_by_id(params[:id])
     @cart.opening_time = Time.parse(@cart.opening_time.to_s()).in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p")
     @cart.closing_time = Time.parse(@cart.closing_time.to_s()).in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p")
@@ -210,11 +215,6 @@ class CartsController < ApplicationController
   end
 
   def update
-    # if session[:username] == nil
-    #   flash[:notice] = "User must login to edit a cart"
-    #   redirect_to cart_path(params[:id])
-    #   return
-    # end
     cart_to_update = Hash.new
     cart_to_update[:name] = cart_params[:name]
     cart_to_update[:location] = cart_params[:location]
