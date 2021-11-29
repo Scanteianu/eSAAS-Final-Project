@@ -1,37 +1,36 @@
 <!--  This file is app/views/carts/index.html.erb -->
-<%= javascript_include_tag "carts" %>
 <%= stylesheet_link_tag "carts", media: "all" %>
 
 <h2>Food Carts</h2>
 <div class="row">
   <div class="col-md-5">
-    <div id="cart-list-gmap" class="gmap-container"></div>
+    <div id="cart-list-gmap" class="row gmap-container"></div>
+    <div class="row justify-content-center my-3">
+      <%= link_to 'Add new food cart', new_cart_path, :class => 'btn btn-primary' %>
+    </div>
   </div>
   <div class="col-md-7">
     <div class="d-flex flex-wrap align-content-center justify-content-center">
       <% @carts.each do |cart| %>
-          <div id="<%=cart[:name].split(' ').join('-')%>" class="card m-2" style="width: 18rem;" data-cart="<%= cart.to_json %>">
-            <div class="card-body">
-              <h5 class="card-title"><%=cart[:name] %></h5>
-              <h6 class="card-subtitle mb-2 text-muted"><%= cart[:location]%></h6>
-            </div>
-            <ul class="list-group list-group-flush">
-              <li class="list-group-item">Payment Options: <%= cart[:payment_options] %></li>
-              <li class="list-group-item">
-                Opens: <%= cart[:opening_time] %> 
-                and Closes: <%= cart[:closing_time] %>
-              </li>
-              <li class="list-group-item">Signature Dish: <%= cart[:top_rated_food] %></li>
-            </ul>
-            <div class="card-body">
-              <a href="/carts/cart/<%=cart[:id]%>" class="card-link">View more</a>
-            </div>
+        <div id="<%=cart[:name].split(' ').join('-')%>" class="card m-2" style="width: 18rem;" data-cart="<%= cart.to_json %>">
+          <div class="card-body">
+            <h5 class="card-title"><%=cart[:name] %></h5>
+            <h6 class="card-subtitle mb-2 text-muted"><%= cart[:location]%></h6>
           </div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">Payment Options: <%= cart[:payment_options] %></li>
+            <li class="list-group-item">
+              Opens: <%= cart[:opening_time] %> 
+              and Closes: <%= cart[:closing_time] %>
+            </li>
+            <li class="list-group-item">Signature Dish: <%= cart[:top_rated_food] %></li>
+          </ul>
+          <div class="card-body">
+            <a href="/carts/cart/<%=cart[:id]%>" class="card-link">View more</a>
+          </div>
+        </div>
       <% end %>
     </div>
   </div>
-</div>
-<div>
-  <%= link_to 'Add new food cart', new_cart_path, :class => 'btn btn-primary' %>
 </div>
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDsr1LFNGK6fUYh-l88qOrqNHeUuF_xtiQ&callback=initMap" async defer></script>
