@@ -13,3 +13,16 @@
  *= require_tree .
  *= require_self
  */
+
+.app-title:hover {
+    text-decoration: none;
+}
+
+.auth-section {
+    align-items: center;
+}
+
+.auth-section #username {
+    margin-right: 1rem;
+    padding: 6px;
+}

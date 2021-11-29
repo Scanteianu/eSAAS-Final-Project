@@ -11,11 +11,8 @@
     <%= favicon_link_tag asset_path('favicon.ico') %>
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <meta name="google-signin-client_id" content="903240660780-58psgdaf22hk5bi514avgqi6g6bj8hrb.apps.googleusercontent.com">
-
   </head>
   <body>
-
-    <div class="g-signin2" data-onsuccess="onSignIn"></div>
     <script>
       function onSignIn(googleUser) {
         var profile = googleUser.getBasicProfile();
@@ -23,8 +20,9 @@
         console.log('Name: ' + profile.getName());
         console.log('Image URL: ' + profile.getImageUrl());
         console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
-        document.getElementById("username").innerHTML = "Signed in as: "+profile.getEmail()
-
+        var username = document.getElementById("username");
+        username.innerHTML = "Signed in as: "+profile.getEmail()
+        username.style.border = "1px solid white";
 
         var xhr = new XMLHttpRequest();
         xhr.open("POST", '/setusername');
@@ -38,9 +36,6 @@
         xhr.send(JSON.stringify({"username":profile.getEmail(),"name":profile.getName()}));
       }
     </script>
-
-
-    <a href="#" onclick="signOut();">Sign out</a>
     <script>
       function signOut() {
         var auth2 = gapi.auth2.getAuthInstance();
@@ -65,9 +60,19 @@
     <%# These classes come from the Bootstrap CSS framework. %>
     <nav class="navbar navbar-expand-lg bg-primary text-white mb-3">
       <h1>
-      <%= link_to 'Food Trucker', root_path, :class => 'text-white' %>
+        <%= link_to 'Food Trucker', root_path, :class => 'text-white app-title' %>
       </h1>
-      <div id="username" style="float:right; padding-left: 60%;"></div>
+      <ul class="auth-section nav navbar-nav ml-auto">
+        <li class="nav-item">
+          <div id="username"></div>
+        </li>
+        <li class="nav-item">
+          <div class="btn-group" role="group" aria-label="Auth buttons">
+            <div class="g-signin2" data-onsuccess="onSignIn"></div>
+            <button type="button" class="btn btn-secondary" onclick="signOut();">Sign out</button>
+          </div>
+        </li>
+      </ul>
     </nav>
     <div class="container-fluid">
       <%# Render "flash" messages in our application. This loads _flash.erb %>
