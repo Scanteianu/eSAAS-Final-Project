@@ -23,7 +23,10 @@
         document.getElementById("username").innerHTML = "Signed in as: "+profile.getEmail();
         document.getElementById("username-container").style.border = "1px solid white";
         // Remove hidden verified check if it exists
-        document.getElementById("verified-user-icon").classList.remove('hidden');
+        var verifiedUserIcon = document.getElementById("verified-user-icon");
+        if (verifiedUserIcon) {
+          verifiedUserIcon.classList.remove('hidden');
+        }
 
         var xhr = new XMLHttpRequest();
         xhr.open("POST", '/setusername');
@@ -43,8 +46,11 @@
         auth2.signOut().then(function () {
           console.log('User signed out.');
           document.getElementById("username").innerHTML ="Not signed in"
-          // Remove hidden verified check if it exists
-          document.getElementById("verified-user-icon").classList.add('hidden');
+          // Add hidden verified check if it exists
+          var verifiedUserIcon = document.getElementById("verified-user-icon");
+          if (verifiedUserIcon) {
+            verifiedUserIcon.classList.add('hidden');
+          }
 
 
           var xhr = new XMLHttpRequest();

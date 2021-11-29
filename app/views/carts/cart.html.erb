@@ -26,6 +26,9 @@
 <br>
 <b>Top rated food:</b> <%= @currentCart[:topRatedFood] %>
 <br>
+<div>
+  <%= link_to 'Edit Cart Details', edit_cart_path, :class => 'btn btn-primary mt-3' %>
+</div>
 <Section class="review-section">
   <h4 class="review-heading">Reviews</h4>
   <%= render "initial_cart_review", currentCart: @currentCart, reviewEnabled: @reviewEnabled, hasUserWrittenReview: @hasUserWrittenReview %>
@@ -35,6 +38,3 @@
     <% end %>
   </div>
 </Section>
-<div>
-  <%= link_to 'Edit Cart Details', edit_cart_path, :class => 'btn btn-primary' %>
-</div>
