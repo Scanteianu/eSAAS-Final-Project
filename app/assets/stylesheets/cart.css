@@ -1,3 +1,16 @@
+ul.payment-options {
+    padding-left: 20px;
+}
+
+.payment-options > li {
+    list-style: none;
+}
+
+.payment-options .venmo {
+    width: 65px;
+    margin: 0 -8px;
+}
+
 .review-heading {
     margin-top: 1rem;
 }

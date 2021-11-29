@@ -8,9 +8,18 @@ Opens: <%= @currentCart[:openHours]%>
 Closes: <%= @currentCart[:closeHours]%>
 <br>
 Payment options:
-<ul>
+<ul class="payment-options">
 <% @currentCart[:paymentOptions].each do |option| %>
-  <li><%= option %></li>
+  <li>
+    <% if option.downcase == 'card' %>
+      <i class="bi bi-credit-card"></i>
+    <% elsif option.downcase == 'cash' %>
+      <i class="bi bi-cash"></i>
+    <% else %>
+      <%= image_tag "venmo.svg", class: "venmo", alt: "Venmo payment" %>
+    <% end %>
+    <%= option %>
+  </li>
 <% end %>
 </ul>
 Owner: <%= @currentCart[:owner] %>
