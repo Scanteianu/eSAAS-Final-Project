@@ -7,17 +7,26 @@ require "rails_helper"
 # end
 describe CartsController, type: :controller do
   describe "loads from db" do
+    default_opening_time = DateTime.parse('9:30:00').strftime("%I:%M %p")
+    default_closing_time = DateTime.parse('18:00:00').strftime("%I:%M %p")
+    let(:test_cart) { FoodCart.create name: 'the chicken dudes', user_id: 4,
+      location: 'location1',
+      opening_time: default_opening_time, 
+      closing_time: default_closing_time,
+      payment_options: 'cash, card', 
+      top_rated_food: 'chicken over rice'
+    }
+
     it "loads a cart from db" do
-      default_opening_time = DateTime.parse('9:30:00').strftime("%I:%M %p")
-      default_closing_time = DateTime.parse('18:00:00').strftime("%I:%M %p")
-      FoodCart.stub(:find_by_id).and_return({:name => 'the chicken dudes', :user_id => 4, :location => 'location1',:opening_time => default_opening_time, :closing_time => default_closing_time,:payment_options => 'cash, card', :top_rated_food => 'chicken over rice'})
+      test_cart.image.attach(io: File.open('spec/controllers/test.jpg'), filename: 'test.jpg', content_type: 'image/jpg')
       User.stub(:find_by_id).and_return({:email_id => 'test1@columbia.edu', :name => 'test1 user'})
       Review.stub(:where).and_return([{:user_id => 4, :food_cart_id => 1,:rating => 5, :review => "the food's good"}])
-      controller.getCartFromDb(1)
+      controller.getCartFromDb(test_cart.id)
       cart = controller.currentCart
       expect(cart[:name]).to eq("the chicken dudes")
       expect(cart[:topRatedFood]).to eq("chicken over rice")
       expect(cart[:paymentOptions]).to eq(["cash","card"])
+      expect(cart[:image]).not_to be_nil
     end
   end
 
@@ -337,6 +346,7 @@ describe CartsController, type: :controller do
         :closing_time => "02:35",
         :payment_options => "Cash, Venmo",
       })
+      img = fixture_file_upload('spec/controllers/test.jpg', 'image/jpg')
 
       get :edit, params: { id: test_cart[:id] }
       post :update, params:{
@@ -346,7 +356,8 @@ describe CartsController, type: :controller do
           "location"=>"123th broadway",
           "opening_time"=>"14:03",
           "closing_time"=>"02:35",
-          "payment_options"=>{"Cash"=>"1"}
+          "payment_options"=>{"Cash"=>"1"},
+          "image"=> img
         }
       }
       expect(response).to redirect_to cart_path(test_cart[:id])
@@ -356,6 +367,7 @@ describe CartsController, type: :controller do
       expect(modified_cart.opening_time).not_to eq(nil)
       expect(modified_cart.closing_time).not_to eq(nil)
       expect(modified_cart.payment_options).to eq("Cash")
+      expect(modified_cart.image.attached?).to eq(true)
     end
 
   end
