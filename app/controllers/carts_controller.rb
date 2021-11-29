@@ -27,10 +27,12 @@ class CartsController < ApplicationController
     if params[:username]=="Nil"
       then
       session[:username]=nil
+      puts "Session username reset to NIL "
       puts "user logged out: " + params[:username]
       render :json => {"setUsername"=>session[:username]}
     else
       session[:username]=params[:username]
+      puts "Session username set to : "+session[:username]
       user = User.find_by email_id: params[:username]
       if user == nil
         new_user = User.create(name: params[:name], email_id: params[:username])
@@ -176,7 +178,9 @@ class CartsController < ApplicationController
   end
 
   def new
-    if session[:username] == nil
+    session_username = getFromSessionObject(:username)
+    if session_username == nil
+    # if session[:username] == nil
       flash[:notice] = "User must login to create a cart"
       redirect_to root_path
       return
@@ -187,7 +191,9 @@ class CartsController < ApplicationController
   end
 
   def edit
-    if session[:username] == nil
+    session_username = getFromSessionObject(:username)
+    if session_username == nil
+    # if session[:username] == nil
       flash[:notice] = "User must login to edit a cart"
       redirect_to cart_path(params[:id])
       return
@@ -205,6 +211,13 @@ class CartsController < ApplicationController
 
 
   def create
+    # session_username = getFromSessionObject(:username)
+    # if session_username == nil
+    # # if session[:username] == nil
+    #   flash[:notice] = "User must login to create a cart"
+    #   redirect_to root_path
+    #   return
+    # end
     cart_to_create = cart_params.clone
     cart_to_create[:opening_time] = Time.parse(cart_params[:opening_time])
     cart_to_create[:closing_time] = Time.parse(cart_params[:closing_time])
@@ -215,6 +228,13 @@ class CartsController < ApplicationController
   end
 
   def update
+    # session_username = getFromSessionObject(:username)
+    # if session_username == nil
+    # # if session[:username] == nil
+    #   flash[:notice] = "User must login to edit a cart"
+    #   redirect_to cart_path(params[:id])
+    #   return
+    # end
     cart_to_update = Hash.new
     cart_to_update[:name] = cart_params[:name]
     cart_to_update[:location] = cart_params[:location]
