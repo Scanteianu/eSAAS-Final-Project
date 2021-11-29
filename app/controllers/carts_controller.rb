@@ -176,6 +176,11 @@ class CartsController < ApplicationController
   end
 
   def new
+    if session[:username] == nil
+      flash[:notice] = "User must login to create a cart"
+      redirect_to root_path
+      return
+    end
     @all_payment_options = ['Cash','Card','Venmo']
     @all_weekdays = ['Sun', 'Mon', 'Tue', 'Wed', "Thu", 'Fri', 'Sat']
     # should render new.html.erb
@@ -195,11 +200,6 @@ class CartsController < ApplicationController
 
 
   def create
-    # if session[:username] == nil
-    #   flash[:notice] = "User must login to create a cart"
-    #   redirect_to root_path
-    #   return
-    # end
     cart_to_create = cart_params.clone
     cart_to_create[:opening_time] = Time.parse(cart_params[:opening_time])
     cart_to_create[:closing_time] = Time.parse(cart_params[:closing_time])
