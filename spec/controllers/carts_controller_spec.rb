@@ -7,17 +7,26 @@ require "rails_helper"
 # end
 describe CartsController, type: :controller do
   describe "loads from db" do
+    default_opening_time = DateTime.parse('9:30:00').strftime("%I:%M %p")
+    default_closing_time = DateTime.parse('18:00:00').strftime("%I:%M %p")
+    let(:test_cart) { FoodCart.create name: 'the chicken dudes', user_id: 4,
+      location: 'location1',
+      opening_time: default_opening_time, 
+      closing_time: default_closing_time,
+      payment_options: 'cash, card', 
+      top_rated_food: 'chicken over rice'
+    }
+
     it "loads a cart from db" do
-      default_opening_time = DateTime.parse('9:30:00').strftime("%I:%M %p")
-      default_closing_time = DateTime.parse('18:00:00').strftime("%I:%M %p")
-      FoodCart.stub(:find_by_id).and_return({:name => 'the chicken dudes', :user_id => 4, :location => 'location1',:opening_time => default_opening_time, :closing_time => default_closing_time,:payment_options => 'cash, card', :top_rated_food => 'chicken over rice'})
+      test_cart.image.attach(io: File.open('spec/controllers/test.jpg'), filename: 'test.jpg', content_type: 'image/jpg')
       User.stub(:find_by_id).and_return({:email_id => 'test1@columbia.edu', :name => 'test1 user'})
       Review.stub(:where).and_return([{:user_id => 4, :food_cart_id => 1,:rating => 5, :review => "the food's good"}])
-      controller.getCartFromDb(1)
+      controller.getCartFromDb(test_cart.id)
       cart = controller.currentCart
       expect(cart[:name]).to eq("the chicken dudes")
       expect(cart[:topRatedFood]).to eq("chicken over rice")
       expect(cart[:paymentOptions]).to eq(["cash","card"])
+      expect(cart[:image]).not_to be_nil
     end
   end
 
@@ -165,6 +174,32 @@ describe CartsController, type: :controller do
     end
   end
 
+  describe "verify_user" do 
+
+    context "user email is nil" do
+      it "return false" do
+        value=@controller.verify_user(nil)
+        expect(value).to eq(false)
+      end
+    end
+    context "user email is not nil" do
+      context "user email includes columbia.edu or barnard.edu" do
+        it "returns true" do
+          value1=@controller.verify_user("test1@columbia.edu")
+          expect(value1).to eq(true)
+          value2=@controller.verify_user("test1@barnard.edu")
+          expect(value2).to eq(true)
+        end
+      end
+      context "user email does not include columbia.edu or barnard.edu" do
+        it "returns false" do
+          value=@controller.verify_user("test1@gmail.com")
+          expect(value).to eq(false)
+        end
+      end
+    end 
+  end
+  
   describe "edit_review" do
     before(:each) do
       default_opening_time = DateTime.parse('9:30:00').strftime("%I:%M %p")
@@ -311,6 +346,7 @@ describe CartsController, type: :controller do
         :closing_time => "02:35",
         :payment_options => "Cash, Venmo",
       })
+      img = fixture_file_upload('spec/controllers/test.jpg', 'image/jpg')
 
       get :edit, params: { id: test_cart[:id] }
       post :update, params:{
@@ -320,7 +356,8 @@ describe CartsController, type: :controller do
           "location"=>"123th broadway",
           "opening_time"=>"14:03",
           "closing_time"=>"02:35",
-          "payment_options"=>{"Cash"=>"1"}
+          "payment_options"=>{"Cash"=>"1"},
+          "image"=> img
         }
       }
       expect(response).to redirect_to cart_path(test_cart[:id])
@@ -330,6 +367,7 @@ describe CartsController, type: :controller do
       expect(modified_cart.opening_time).not_to eq(nil)
       expect(modified_cart.closing_time).not_to eq(nil)
       expect(modified_cart.payment_options).to eq("Cash")
+      expect(modified_cart.image.attached?).to eq(true)
     end
 
   end

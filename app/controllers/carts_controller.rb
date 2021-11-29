@@ -81,6 +81,7 @@ class CartsController < ApplicationController
       end
 
       reviewHash = Hash.new
+      reviewHash[:is_verified] = verify_user(currentUser[:email_id])
       reviewHash[:id] = review[:id]
       reviewHash[:cart_id] = cartFromDb[:id]
       reviewHash[:username] = currentUser[:name]
@@ -199,11 +200,11 @@ class CartsController < ApplicationController
     #   redirect_to root_path
     #   return
     # end
-    cart_params[:opening_time] = Time.parse(cart_params[:opening_time])
-    cart_params[:closing_time] = Time.parse(cart_params[:closing_time])
-    cart_params[:payment_options] = cart_params[:payment_options].keys.join(', ') rescue ""
-    # puts(cartToCreate)
-    @cart = FoodCart.create!(cart_params)
+    cart_to_create = cart_params.clone
+    cart_to_create[:opening_time] = Time.parse(cart_params[:opening_time])
+    cart_to_create[:closing_time] = Time.parse(cart_params[:closing_time])
+    cart_to_create[:payment_options] = cart_params[:payment_options].keys.join(', ') rescue "NA"
+    @cart = FoodCart.create!(cart_to_create)
     flash[:notice] = "#{@cart.name} was successfully created."
     redirect_to root_path
   end
@@ -234,6 +235,19 @@ class CartsController < ApplicationController
   def listifyPaymentOptions(paymentOptStr)
     return paymentOptStr.split(", ")
   end
+    
+  def verify_user(user_email)
+    #check if it has columbia.edu or barnard.edu
+    if user_email.nil?
+      return false
+    else
+      if user_email.include? "columbia.edu" or user_email.include? "barnard.edu"
+        return true
+      else
+        return false
+      end
+    end
+  end
 
   private
   # Making "internal" methods private is not required, but is a common practice.
@@ -251,4 +265,5 @@ class CartsController < ApplicationController
     params.require(:cart).permit(:name, :location, :coordinates, :menu, :image, :opening_time, :closing_time, :top_rated_food, payment_options:{})
     # params.require(:cart).permit(:name, :location, :menu, :opening_time, :closing_time, :top_rated_food, payment_options:{}, open_days:{}, :coordinates)
   end
+  
 end
