@@ -1,13 +1,13 @@
 <h2><%= @currentCart[:name]%></h2>
 <%= image_tag @currentCart[:image] if !@currentCart[:image].nil?  %>
 <br>
-Location: <%= @currentCart[:location]%>
+<b>Location:</b> <%= @currentCart[:location]%>
 <br>
-Opens: <%= @currentCart[:openHours]%>
+<b>Opens:</b> <%= @currentCart[:openHours]%>
 <br>
-Closes: <%= @currentCart[:closeHours]%>
+<b>Closes:</b> <%= @currentCart[:closeHours]%>
 <br>
-Payment options:
+<b>Payment options:</b>
 <ul class="payment-options">
 <% @currentCart[:paymentOptions].each do |option| %>
   <li>
@@ -22,9 +22,9 @@ Payment options:
   </li>
 <% end %>
 </ul>
-Owner: <%= @currentCart[:owner] %>
+<b>Owner:</b> <%= @currentCart[:owner] %>
 <br>
-Top rated food: <%= @currentCart[:topRatedFood] %>
+<b>Top rated food:</b> <%= @currentCart[:topRatedFood] %>
 <br>
 <Section class="review-section">
   <h4 class="review-heading">Reviews</h4>
