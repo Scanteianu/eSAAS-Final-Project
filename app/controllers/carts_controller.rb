@@ -205,7 +205,7 @@ class CartsController < ApplicationController
     @all_payment_options = ['Cash','Card','Venmo']
     @all_weekdays = ['Sun', 'Mon', 'Tue', 'Wed', "Thu", 'Fri', 'Sat']
     @accepted_payment_options = @cart.payment_options.split(", ")
-    @open_on_days = []
+    @open_on_days = @cart.open_on_days.split(", ")
     #if open days added to schema, uncomment below line
     # @open_on_days = @cart.open_on.split(", ")
   end
@@ -242,6 +242,7 @@ class CartsController < ApplicationController
     cart_to_update[:closing_time] = Time.parse(cart_params[:closing_time])
     cart_to_update[:top_rated_food] = cart_params[:top_rated_food]
     cart_to_update[:payment_options] = cart_params[:payment_options].keys.join(', ') rescue "NA"
+    cart_to_update[:open_on_days] = cart_params[:open_on_days].keys.join(', ') rescue "NA"
     if !cart_params[:image].nil?
       cart_to_update[:image] = cart_params[:image]
     end
