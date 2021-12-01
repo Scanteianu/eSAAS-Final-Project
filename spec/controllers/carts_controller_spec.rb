@@ -83,7 +83,8 @@ describe CartsController, type: :controller do
         :opening_time => default_opening_time,
         :closing_time => default_closing_time,
         :payment_options => 'cash, card, venmo',
-        :top_rated_food => 'chicken over rice'
+        :top_rated_food => 'chicken over rice',
+        :open_on_days => 'Sun, Sat',
       })
       @review = Review.create!(:user_id => @test_user[:id], :food_cart_id => @test_food_cart[:id], :rating => 3, :review => 'Not bad')
     end
@@ -99,6 +100,7 @@ describe CartsController, type: :controller do
       expected_cart[:topRatedFood] = @test_food_cart[:top_rated_food]
       expected_cart[:openHours] = "04:30AM"
       expected_cart[:closeHours] = "01:00PM"
+      expected_cart[:openOnDays] = @test_food_cart[:open_on_days]
 
       get :cart, params: { id: @test_food_cart[:id] }
 
