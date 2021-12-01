@@ -20,10 +20,12 @@
           <ul class="list-group list-group-flush">
             <li class="list-group-item">Payment Options: <%= cart[:payment_options] %></li>
             <li class="list-group-item">
-              Opens: <%= cart[:opening_time] %> 
+              Opens: <%= cart[:opening_time] %>
               and Closes: <%= cart[:closing_time] %>
             </li>
             <li class="list-group-item">Signature Dish: <%= cart[:top_rated_food] %></li>
+            <li class="list-group-item">Rating: <%= cart[:rating] %></li>
+
           </ul>
           <div class="card-body">
             <a href="/carts/cart/<%=cart[:id]%>" class="card-link">View more</a>

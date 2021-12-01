@@ -11,9 +11,9 @@ describe CartsController, type: :controller do
     default_closing_time = DateTime.parse('18:00:00').strftime("%I:%M %p")
     let(:test_cart) { FoodCart.create name: 'the chicken dudes', user_id: 4,
       location: 'location1',
-      opening_time: default_opening_time, 
+      opening_time: default_opening_time,
       closing_time: default_closing_time,
-      payment_options: 'cash, card', 
+      payment_options: 'cash, card',
       top_rated_food: 'chicken over rice'
     }
 
@@ -65,6 +65,8 @@ describe CartsController, type: :controller do
       expect(@controller.instance_variable_get(:@carts)[0][:closing_time]).not_to eq(nil)
       expect(@controller.instance_variable_get(:@carts)[0][:payment_options]).to eq(test_food_cart[:payment_options])
       expect(@controller.instance_variable_get(:@carts)[0][:top_rated_food]).to eq(test_food_cart[:top_rated_food])
+      expect(@controller.instance_variable_get(:@carts)[0][:rating]).to eq("No Reviews")
+
     end
   end
 
@@ -103,6 +105,9 @@ describe CartsController, type: :controller do
       get :cart, params: { id: @test_food_cart[:id] }
 
       expect(@controller.instance_variable_get(:@currentCart)).to eq(expected_cart)
+    end
+    it "should have the right review score" do
+      expect(@controller.get_rating(@test_food_cart[:id])).to eq(3)
     end
 
     it "should assign hasUserWrittenReview variable" do
@@ -174,7 +179,7 @@ describe CartsController, type: :controller do
     end
   end
 
-  describe "verify_user" do 
+  describe "verify_user" do
 
     context "user email is nil" do
       it "return false" do
@@ -197,9 +202,9 @@ describe CartsController, type: :controller do
           expect(value).to eq(false)
         end
       end
-    end 
+    end
   end
-  
+
   describe "edit_review" do
     before(:each) do
       default_opening_time = DateTime.parse('9:30:00').strftime("%I:%M %p")
@@ -372,7 +377,7 @@ describe CartsController, type: :controller do
       expect(modified_cart.payment_options).to eq("Cash")
       expect(modified_cart.image.attached?).to eq(true)
     end
-    
+
     after(:context) do
       $injectedSession = nil
     end

@@ -13,6 +13,7 @@ class CartsController < ApplicationController
       foodCartHash[:payment_options] = foodCart[:payment_options]
       foodCartHash[:top_rated_food] = foodCart[:top_rated_food]
       foodCartHash[:coordinates] = foodCart[:coordinates]
+      foodCartHash[:rating] = get_rating(foodCart[:id])
       cartsArray.push(foodCartHash)
     end
     @carts = cartsArray
@@ -107,7 +108,7 @@ class CartsController < ApplicationController
       else
         raise Exception.new "User must be logged in to edit their review"
       end
-    
+
     review_hash[:user_id] = user.id
     review_hash[:food_cart_id] = params[:cart_id]
     review_hash[:rating] = initial_review_params[:rating]
@@ -255,7 +256,7 @@ class CartsController < ApplicationController
   def listifyPaymentOptions(paymentOptStr)
     return paymentOptStr.split(", ")
   end
-    
+
   def verify_user(user_email)
     #check if it has columbia.edu or barnard.edu
     if user_email.nil?
@@ -267,6 +268,17 @@ class CartsController < ApplicationController
         return false
       end
     end
+  end
+
+  def get_rating(cartIndex)
+    sum=0.0
+    count=0
+    fetchedReviews = FoodCart.get_all_reviews(cartIndex)
+    fetchedReviews.each do |review|
+        sum+=review[:rating]
+        count+=1
+    end
+    if count==0 then return "No Reviews" else return (sum/count).round(1) end
   end
 
   private
@@ -285,5 +297,5 @@ class CartsController < ApplicationController
     params.require(:cart).permit(:name, :location, :coordinates, :menu, :image, :opening_time, :closing_time, :top_rated_food, payment_options:{})
     # params.require(:cart).permit(:name, :location, :menu, :opening_time, :closing_time, :top_rated_food, payment_options:{}, open_days:{}, :coordinates)
   end
-  
+
 end
