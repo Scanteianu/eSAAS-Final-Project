@@ -11,6 +11,11 @@ ul.payment-options {
     margin: 0 -8px;
 }
 
+.is-owner {
+    width: 180px;
+    padding-right: 2px;
+}
+
 .review-heading {
     margin-top: 1rem;
 }
