@@ -32,6 +32,10 @@
   <%= label :cart, :image, 'Cart picture:', :class => 'col-form-label' %>
   <%= file_field :cart, :image, :class => 'form-control', accept: 'image/jpeg,image/jpg, image/png' %>
   <br/>
+  <%= label_tag "cart[is_owner]", 'Do you own this cart?', class: 'form-check-label is-owner' %>
+  <%= check_box_tag "cart[is_owner]", "1", false, class: 'form-check-input' %>
+  <br/>
+  <br/>
   <%= submit_tag 'Add Cart', :class => 'btn btn-primary' %>
   <%= link_to 'Cancel', root_path, :class => 'btn btn-secondary' %>
 <% end %>

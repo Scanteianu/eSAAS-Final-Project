@@ -323,6 +323,7 @@ describe CartsController, type: :controller do
       $injectedSession = { :username => test_username }
     end
     it "create a new cart" do
+      owner = User.create!(:name => 'test name', :email_id => 'test@columbia.edu')
       get :new
       expected_cart = Hash.new
       expected_cart[:name] = "the new cart"
@@ -330,6 +331,7 @@ describe CartsController, type: :controller do
       expected_cart[:opening_time] = "14:03"
       expected_cart[:closing_time] = "02:35"
       expected_cart[:payment_options] = "Cash, Venmo"
+      expected_cart[:user_id] = owner.id
 
       post :create, params:{
         "cart"=>{
@@ -337,7 +339,8 @@ describe CartsController, type: :controller do
           "location"=>"113th broadway",
           "opening_time"=>"14:03",
           "closing_time"=>"02:35",
-          "payment_options"=>{"Cash"=>"1", "Venmo"=>"1"}
+          "payment_options"=>{"Cash"=>"1", "Venmo"=>"1"},
+          "is_owner"=>"1"
         }
       }
       expect(@controller.instance_variable_get(:@cart)[:name]).to eq(expected_cart[:name])
@@ -346,6 +349,7 @@ describe CartsController, type: :controller do
       expect(@controller.instance_variable_get(:@cart)[:opening_time]).not_to eq(nil)
       expect(@controller.instance_variable_get(:@cart)[:closing_time]).not_to eq(nil)
       expect(@controller.instance_variable_get(:@cart)[:payment_options]).to eq(expected_cart[:payment_options])
+      expect(@controller.instance_variable_get(:@cart)[:user_id]).to eq(expected_cart[:user_id])
     end
 
     it "edit an existing cart" do

@@ -223,6 +223,10 @@ class CartsController < ApplicationController
     cart_to_create[:closing_time] = Time.parse(cart_params[:closing_time])
     cart_to_create[:payment_options] = cart_params[:payment_options].keys.join(', ') rescue "NA"
     cart_to_create[:open_on_days] = cart_params[:open_on_days].keys.join(', ') rescue "NA"
+    if cart_params[:is_owner] != nil
+      cart_to_create.delete(:is_owner)
+      cart_to_create[:user_id] = User.find_by(:email_id => session_username)[:id]
+    end
     @cart = FoodCart.create!(cart_to_create)
     flash[:notice] = "#{@cart.name} was successfully created."
     redirect_to root_path
@@ -294,7 +298,7 @@ class CartsController < ApplicationController
   end
 
   def cart_params
-    params.require(:cart).permit(:name, :location, :coordinates, :menu, :image, :opening_time, :closing_time, :top_rated_food, payment_options:{}, open_on_days:{})
+    params.require(:cart).permit(:name, :location, :coordinates, :menu, :image, :opening_time, :closing_time, :top_rated_food , :is_owner, payment_options:{}, open_on_days:{})
     # params.require(:cart).permit(:name, :location, :menu, :opening_time, :closing_time, :top_rated_food, payment_options:{}, open_on_days:{}, :coordinates)
   end
 
