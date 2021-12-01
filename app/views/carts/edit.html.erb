@@ -21,11 +21,11 @@
   </div>
   <% end %>
   <br/>
-  <%= label :cart, :open_days, 'Opens on:', :class => 'col-form-label'  %>
+  <%= label :cart, :open_on_days, 'Opens on:', :class => 'col-form-label'  %>
   <% @all_weekdays.each do |day| %>
     <div class="form-check  form-check-inline">
-      <%= label_tag "cart[open_days[#{day}]]", day, class: 'form-check-label' %>
-      <%= check_box_tag "cart[open_days[#{day}]]", "1", @open_on_days.include?(day), class: 'form-check-input' %>
+      <%= label_tag "cart[open_on_days[#{day}]]", day, class: 'form-check-label' %>
+      <%= check_box_tag "cart[open_on_days[#{day}]]", "1", @open_on_days.include?(day), class: 'form-check-input' %>
     </div>
   <% end %>
   <br/>

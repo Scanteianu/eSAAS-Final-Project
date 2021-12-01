@@ -85,7 +85,8 @@ describe CartsController, type: :controller do
         :opening_time => default_opening_time,
         :closing_time => default_closing_time,
         :payment_options => 'cash, card, venmo',
-        :top_rated_food => 'chicken over rice'
+        :top_rated_food => 'chicken over rice',
+        :open_on_days => 'Sun, Sat',
       })
       @review = Review.create!(:user_id => @test_user[:id], :food_cart_id => @test_food_cart[:id], :rating => 3, :review => 'Not bad')
     end
@@ -101,6 +102,7 @@ describe CartsController, type: :controller do
       expected_cart[:topRatedFood] = @test_food_cart[:top_rated_food]
       expected_cart[:openHours] = "04:30AM"
       expected_cart[:closeHours] = "01:00PM"
+      expected_cart[:openOnDays] = @test_food_cart[:open_on_days]
 
       get :cart, params: { id: @test_food_cart[:id] }
 
@@ -315,7 +317,7 @@ describe CartsController, type: :controller do
     end
   end
 
-  describe "upsert cart" do
+  describe "upsert cart with logged in user" do
     before(:context) do
       test_username = "test@columbia.edu"
       $injectedSession = { :username => test_username }
@@ -353,6 +355,7 @@ describe CartsController, type: :controller do
         :opening_time => "14:03",
         :closing_time => "02:35",
         :payment_options => "Cash, Venmo",
+        :open_on_days => 'Sun, Sat',
       })
       img = fixture_file_upload('spec/controllers/test.jpg', 'image/jpg')
 
@@ -365,6 +368,7 @@ describe CartsController, type: :controller do
           "opening_time"=>"14:03",
           "closing_time"=>"02:35",
           "payment_options"=>{"Cash"=>"1"},
+          "open_on_days"=>{"Fri"=>"1"},
           "image"=> img
         }
       }
@@ -376,6 +380,64 @@ describe CartsController, type: :controller do
       expect(modified_cart.closing_time).not_to eq(nil)
       expect(modified_cart.payment_options).to eq("Cash")
       expect(modified_cart.image.attached?).to eq(true)
+      expect(modified_cart.open_on_days).to eq("Fri")
+    end
+    
+    after(:context) do
+      $injectedSession = nil
+    end
+  end
+
+  describe "upsert cart without login" do
+    it "create a new cart without login" do
+      get :new
+      expected_cart = nil
+
+      post :create, params:{
+        "cart"=>{
+          "name"=>"the new cart",
+          "location"=>"113th broadway",
+          "opening_time"=>"14:03",
+          "closing_time"=>"02:35",
+          "payment_options"=>{"Cash"=>"1", "Venmo"=>"1"}
+        }
+      }
+      expect(@controller.instance_variable_get(:@cart)).to be_nil
+    end
+
+    it "edit an existing cart" do
+      test_cart = FoodCart.create!({
+        :name => 'the exisitng cart',
+        :location => '113th broadway',
+        :opening_time => "14:03",
+        :closing_time => "02:35",
+        :payment_options => "Cash, Venmo",
+        :open_on_days => 'Sun, Sat',
+      })
+      img = fixture_file_upload('spec/controllers/test.jpg', 'image/jpg')
+
+      get :edit, params: { id: test_cart[:id] }
+      post :update, params:{
+        "id" => test_cart[:id] ,
+        "cart"=>{
+          "name"=>"the modified cart",
+          "location"=>"123th broadway",
+          "opening_time"=>"14:03",
+          "closing_time"=>"02:35",
+          "payment_options"=>{"Cash"=>"1"},
+          "open_on_days"=>{"Fri"=>"1"},
+          "image"=> img
+        }
+      }
+      expect(response).to redirect_to cart_path(test_cart[:id])
+      modified_cart = FoodCart.find_by_id(test_cart[:id])
+      expect(modified_cart.name).to eq("the exisitng cart")
+      expect(modified_cart.location).to eq("113th broadway")
+      expect(modified_cart.opening_time).not_to eq(nil)
+      expect(modified_cart.closing_time).not_to eq(nil)
+      expect(modified_cart.payment_options).to eq("Cash, Venmo")
+      expect(modified_cart.image.attached?).to eq(false)
+      expect(modified_cart.open_on_days).to eq("Sun, Sat")
     end
 
     after(:context) do

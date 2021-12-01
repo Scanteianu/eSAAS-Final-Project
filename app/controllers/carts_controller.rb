@@ -56,6 +56,7 @@ class CartsController < ApplicationController
     cartToDisplay[:owner] = User.find_by_id(cartFromDb[:user_id])[:name] rescue "NA"
     cartToDisplay[:paymentOptions] = listifyPaymentOptions(cartFromDb[:payment_options])
     cartToDisplay[:topRatedFood]= cartFromDb[:top_rated_food]
+    cartToDisplay[:openOnDays] = cartFromDb[:open_on_days]
     if cartFromDb.image.attached?
       cartToDisplay[:image] = cartFromDb.image.variant(resize: "320x320")
     end
@@ -205,16 +206,14 @@ class CartsController < ApplicationController
     @all_payment_options = ['Cash','Card','Venmo']
     @all_weekdays = ['Sun', 'Mon', 'Tue', 'Wed', "Thu", 'Fri', 'Sat']
     @accepted_payment_options = @cart.payment_options.split(", ")
-    @open_on_days = []
+    @open_on_days = @cart.open_on_days.split(", ")
     #if open days added to schema, uncomment below line
     # @open_on_days = @cart.open_on.split(", ")
   end
 
-
   def create
     session_username = getFromSessionObject(:username)
     if session_username == nil
-    # if session[:username] == nil
       flash[:notice] = "User must login to create a cart"
       redirect_to root_path
       return
@@ -223,6 +222,7 @@ class CartsController < ApplicationController
     cart_to_create[:opening_time] = Time.parse(cart_params[:opening_time])
     cart_to_create[:closing_time] = Time.parse(cart_params[:closing_time])
     cart_to_create[:payment_options] = cart_params[:payment_options].keys.join(', ') rescue "NA"
+    cart_to_create[:open_on_days] = cart_params[:open_on_days].keys.join(', ') rescue "NA"
     @cart = FoodCart.create!(cart_to_create)
     flash[:notice] = "#{@cart.name} was successfully created."
     redirect_to root_path
@@ -231,7 +231,6 @@ class CartsController < ApplicationController
   def update
     session_username = getFromSessionObject(:username)
     if session_username == nil
-    # if session[:username] == nil
       flash[:notice] = "User must login to edit a cart"
       redirect_to cart_path(params[:id])
       return
@@ -244,6 +243,7 @@ class CartsController < ApplicationController
     cart_to_update[:closing_time] = Time.parse(cart_params[:closing_time])
     cart_to_update[:top_rated_food] = cart_params[:top_rated_food]
     cart_to_update[:payment_options] = cart_params[:payment_options].keys.join(', ') rescue "NA"
+    cart_to_update[:open_on_days] = cart_params[:open_on_days].keys.join(', ') rescue "NA"
     if !cart_params[:image].nil?
       cart_to_update[:image] = cart_params[:image]
     end
@@ -294,8 +294,8 @@ class CartsController < ApplicationController
   end
 
   def cart_params
-    params.require(:cart).permit(:name, :location, :coordinates, :menu, :image, :opening_time, :closing_time, :top_rated_food, payment_options:{})
-    # params.require(:cart).permit(:name, :location, :menu, :opening_time, :closing_time, :top_rated_food, payment_options:{}, open_days:{}, :coordinates)
+    params.require(:cart).permit(:name, :location, :coordinates, :menu, :image, :opening_time, :closing_time, :top_rated_food, payment_options:{}, open_on_days:{})
+    # params.require(:cart).permit(:name, :location, :menu, :opening_time, :closing_time, :top_rated_food, payment_options:{}, open_on_days:{}, :coordinates)
   end
 
 end
