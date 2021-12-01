@@ -44,3 +44,16 @@ Feature: upsert cart
     Then I should see "120th broadway"
     Then I should see "10:00AM"
     Then I should see "06:00PM"
+  
+  Scenario: create cart without logging in
+    Given I am on the home page
+    And I am logged out 
+    And I follow "Add new food cart"
+    Then I should see "User must login to create a cart"
+  
+  Scenario: update cart without logging in
+    Given I am on the home page
+    And I am logged out
+    When I view more for "The Chicken Dudes"
+    And I follow "Edit Cart Details"
+    Then I should see "User must login to edit a cart"
