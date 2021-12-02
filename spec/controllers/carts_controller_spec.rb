@@ -312,6 +312,7 @@ describe CartsController, type: :controller do
       test_username = "test@columbia.edu"
       $injectedSession = { :username => test_username }
     end
+
     it "create a new cart" do
       owner = User.create!(:name => 'test name', :email_id => 'test@columbia.edu')
       get :new
@@ -342,7 +343,8 @@ describe CartsController, type: :controller do
       expect(@controller.instance_variable_get(:@cart)[:user_id]).to eq(expected_cart[:user_id])
     end
 
-    it "edit an existing cart" do
+    it "owner edits an existing cart" do
+      owner = User.create!(:name => 'test name', :email_id => 'test@columbia.edu')
       test_cart = FoodCart.create!({
         :name => 'the exisitng cart',
         :location => '113th broadway',
@@ -350,6 +352,7 @@ describe CartsController, type: :controller do
         :closing_time => "02:35",
         :payment_options => "Cash, Venmo",
         :open_on_days => 'Sun, Sat',
+        :user_id=>owner.id
       })
       img = fixture_file_upload('spec/controllers/test.jpg', 'image/jpg')
 
@@ -375,6 +378,45 @@ describe CartsController, type: :controller do
       expect(modified_cart.payment_options).to eq("Cash")
       expect(modified_cart.image.attached?).to eq(true)
       expect(modified_cart.open_on_days).to eq("Fri")
+      expect(modified_cart.user_id).to be_nil
+    end
+
+    it "non-owner user edits an existing cart" do
+      user = User.create!(:name => 'test name', :email_id => 'test@columbia.edu')
+      test_cart = FoodCart.create!({
+        :name => 'the exisitng cart',
+        :location => '113th broadway',
+        :opening_time => "14:03",
+        :closing_time => "02:35",
+        :payment_options => "Cash, Venmo",
+        :open_on_days => 'Sun, Sat',
+      })
+      img = fixture_file_upload('spec/controllers/test.jpg', 'image/jpg')
+
+      get :edit, params: { id: test_cart[:id] }
+      post :update, params:{
+        "id" => test_cart[:id] ,
+        "cart"=>{
+          "name"=>"the modified cart",
+          "location"=>"123th broadway",
+          "opening_time"=>"14:03",
+          "closing_time"=>"02:35",
+          "payment_options"=>{"Cash"=>"1"},
+          "open_on_days"=>{"Fri"=>"1"},
+          "image"=> img,
+          "is_owner"=>"1"
+        }
+      }
+      expect(response).to redirect_to cart_path(test_cart[:id])
+      modified_cart = FoodCart.find_by_id(test_cart[:id])
+      expect(modified_cart.name).to eq("the modified cart")
+      expect(modified_cart.location).to eq("123th broadway")
+      expect(modified_cart.opening_time).not_to eq(nil)
+      expect(modified_cart.closing_time).not_to eq(nil)
+      expect(modified_cart.payment_options).to eq("Cash")
+      expect(modified_cart.image.attached?).to eq(true)
+      expect(modified_cart.open_on_days).to eq("Fri")
+      expect(modified_cart.user_id).to eq(user.id)
     end
     
     after(:context) do
