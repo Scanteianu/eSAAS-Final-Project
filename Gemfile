@@ -4,6 +4,7 @@ ruby '>= 2.6.6', '< 2.7.0'
 gem 'rails', '~> 5.2.0'
 gem 'pg', '~> 0.18'
 gem 'mini_magick'
+gem 'bootsnap'
 
 # for Heroku deployment
 group :development, :test do
@@ -14,7 +15,6 @@ group :development, :test do
   gem 'launchy'
   gem 'rspec-rails', '3.7.2'
   gem 'ZenTest', '4.11.2'
-  gem 'bootsnap'
   gem 'listen'
 end
 
@@ -28,7 +28,6 @@ group :test do
 end
 group :production do
   gem 'bundler', '>= 1.30'
-  gem 'bootsnap'
 end
 
 # Gems used only for assets and not required
