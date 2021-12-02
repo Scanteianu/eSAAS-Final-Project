@@ -198,7 +198,6 @@ class CartsController < ApplicationController
   def edit
     session_username = getFromSessionObject(:username)
     if session_username == nil
-    # if session[:username] == nil
       flash[:notice] = "User must login to edit a cart"
       redirect_to cart_path(params[:id])
       return
@@ -210,6 +209,12 @@ class CartsController < ApplicationController
     @all_weekdays = ['Sun', 'Mon', 'Tue', 'Wed', "Thu", 'Fri', 'Sat']
     @accepted_payment_options = @cart.payment_options.split(", ")
     @open_on_days = @cart.open_on_days.split(", ")
+    owner = User.find_by_id(@cart.user_id)[:email_id] rescue ""
+    if owner == session_username
+      @is_owner = true
+    else
+      @is_owner = false
+    end
     #if open days added to schema, uncomment below line
     # @open_on_days = @cart.open_on.split(", ")
   end
@@ -242,20 +247,32 @@ class CartsController < ApplicationController
       redirect_to cart_path(params[:id])
       return
     end
-    cart_to_update = Hash.new
-    cart_to_update[:name] = cart_params[:name]
-    cart_to_update[:location] = cart_params[:location]
-    cart_to_update[:coordinates] = cart_params[:coordinates]
-    cart_to_update[:opening_time] = Time.parse(cart_params[:opening_time]) rescue nil
-    cart_to_update[:closing_time] = Time.parse(cart_params[:closing_time]) rescue nil
-    cart_to_update[:top_rated_food] = cart_params[:top_rated_food]
-    cart_to_update[:payment_options] = cart_params[:payment_options].keys.join(', ') rescue "NA"
-    cart_to_update[:open_on_days] = cart_params[:open_on_days].keys.join(', ') rescue "NA"
-    if !cart_params[:image].nil?
-      cart_to_update[:image] = cart_params[:image]
-    end
     @cart = FoodCart.find params[:id]
-    @cart.update_attributes!(cart_to_update)
+    new_values = Hash.new
+    new_values[:name] = cart_params[:name]
+    new_values[:location] = cart_params[:location]
+    new_values[:coordinates] = cart_params[:coordinates]
+    new_values[:opening_time] = Time.parse(cart_params[:opening_time]) rescue nil
+    new_values[:closing_time] = Time.parse(cart_params[:closing_time]) rescue nil
+    new_values[:top_rated_food] = cart_params[:top_rated_food]
+    new_values[:payment_options] = cart_params[:payment_options].keys.join(', ') rescue "NA"
+    new_values[:open_on_days] = cart_params[:open_on_days].keys.join(', ') rescue "NA"
+    if !cart_params[:image].nil?
+      new_values[:image] = cart_params[:image]
+    end
+
+    if !cart_params[:is_owner].nil?
+      new_values.delete(:is_owner)
+      new_values[:user_id] = User.find_by(:email_id => session_username)[:id]
+    else 
+      #is current owner unchecks is_owner box, delete owner for the cart
+      curr_owner = User.find_by_id(@cart.user_id)[:email_id] rescue ""
+      if curr_owner == session_username
+        new_values[:user_id] = nil
+      end
+    end
+
+    @cart.update_attributes!(new_values)
     flash[:notice] = "#{@cart.name} was successfully updated."
     redirect_to cart_path(params[:id])
   end
