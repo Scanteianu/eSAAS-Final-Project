@@ -62,10 +62,10 @@ class CartsController < ApplicationController
     end
 
     # Convert UTC time to eastern time
-    parsed_open_time = Time.parse(cartFromDb[:opening_time].to_s())
-    parsed_close_time = Time.parse(cartFromDb[:closing_time].to_s())
-    cartToDisplay[:openHours] = parsed_open_time.in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p")
-    cartToDisplay[:closeHours] = parsed_close_time.in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p")
+    parsed_open_time = Time.parse(cartFromDb[:opening_time].to_s()) rescue ""
+    parsed_close_time = Time.parse(cartFromDb[:closing_time].to_s()) rescue ""
+    cartToDisplay[:openHours] = parsed_open_time.in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p") rescue "NA"
+    cartToDisplay[:closeHours] = parsed_close_time.in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p") rescue "NA"
     @currentCart=cartToDisplay
 
     # User must be logged in to write review
@@ -204,8 +204,8 @@ class CartsController < ApplicationController
       return
     end
     @cart = FoodCart.find_by_id(params[:id])
-    @cart.opening_time = Time.parse(@cart.opening_time.to_s()).in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p")
-    @cart.closing_time = Time.parse(@cart.closing_time.to_s()).in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p")
+    @cart.opening_time = Time.parse(@cart.opening_time.to_s()).in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p") rescue nil
+    @cart.closing_time = Time.parse(@cart.closing_time.to_s()).in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p") rescue nil
     @all_payment_options = ['Cash','Card','Venmo']
     @all_weekdays = ['Sun', 'Mon', 'Tue', 'Wed', "Thu", 'Fri', 'Sat']
     @accepted_payment_options = @cart.payment_options.split(", ")
@@ -222,8 +222,8 @@ class CartsController < ApplicationController
       return
     end
     cart_to_create = cart_params.clone
-    cart_to_create[:opening_time] = Time.parse(cart_params[:opening_time])
-    cart_to_create[:closing_time] = Time.parse(cart_params[:closing_time])
+    cart_to_create[:opening_time] = Time.parse(cart_params[:opening_time]) rescue nil
+    cart_to_create[:closing_time] = Time.parse(cart_params[:closing_time]) rescue nil
     cart_to_create[:payment_options] = cart_params[:payment_options].keys.join(', ') rescue "NA"
     cart_to_create[:open_on_days] = cart_params[:open_on_days].keys.join(', ') rescue "NA"
     if cart_params[:is_owner] != nil
@@ -246,8 +246,8 @@ class CartsController < ApplicationController
     cart_to_update[:name] = cart_params[:name]
     cart_to_update[:location] = cart_params[:location]
     cart_to_update[:coordinates] = cart_params[:coordinates]
-    cart_to_update[:opening_time] = Time.parse(cart_params[:opening_time])
-    cart_to_update[:closing_time] = Time.parse(cart_params[:closing_time])
+    cart_to_update[:opening_time] = Time.parse(cart_params[:opening_time]) rescue nil
+    cart_to_update[:closing_time] = Time.parse(cart_params[:closing_time]) rescue nil
     cart_to_update[:top_rated_food] = cart_params[:top_rated_food]
     cart_to_update[:payment_options] = cart_params[:payment_options].keys.join(', ') rescue "NA"
     cart_to_update[:open_on_days] = cart_params[:open_on_days].keys.join(', ') rescue "NA"

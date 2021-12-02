@@ -1,14 +1,27 @@
 <h2><%= @currentCart[:name]%></h2>
-<%= image_tag @currentCart[:image] if !@currentCart[:image].nil?  %>
-<br>
+<% if !@currentCart[:image].nil? %>
+  <%= image_tag @currentCart[:image]%>
+  <br>
+<% end %>
+
 <b>Location:</b> <%= @currentCart[:location]%>
 <br>
-<b>Opens:</b> <%= @currentCart[:openHours]%>
-<br>
-<b>Closes:</b> <%= @currentCart[:closeHours]%>
-<br>
-<b>Open on Days:</b> <%= @currentCart[:openOnDays]%>
-<br>
+
+<% if @currentCart[:openHours] != "NA" %>
+  <b>Opens:</b> <%= @currentCart[:openHours] %>
+  <br>
+<% end %>
+
+<% if @currentCart[:closeHours] != "NA" %>
+  <b>Closes:</b> <%= @currentCart[:closeHours] %>
+  <br>
+<% end %>
+
+<% if @currentCart[:openOnDays] != "NA" %>
+  <b>Open on Days:</b> <%= @currentCart[:openOnDays] %>
+  <br>
+<% end %>
+
 <% if @currentCart[:paymentOptions] != "NA" %>
   <b>Payment options:</b>
   <ul class="payment-options">
@@ -26,14 +39,17 @@
   <% end %>
   </ul>
 <% end %>
+
 <% if @currentCart[:owner] != 'NA' %>
   <b>Owner:</b> <%= @currentCart[:owner] %>
+    <br>
 <% end %>
-<br>
+
 <% if !@currentCart[:topRatedFood].empty? %>
   <b>Top rated food:</b> <%= @currentCart[:topRatedFood] %>
+    <br>
 <% end %>
-<br>
+
 <div>
   <%= link_to 'Edit Cart Details', edit_cart_path, :class => 'btn btn-primary mt-3' %>
 </div>
