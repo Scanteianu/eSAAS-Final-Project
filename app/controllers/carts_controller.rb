@@ -258,7 +258,7 @@ class CartsController < ApplicationController
   end
 
   def listifyPaymentOptions(paymentOptStr)
-    return paymentOptStr.split(", ")
+    return paymentOptStr == "NA" ? paymentOptStr : paymentOptStr.split(", ")
   end
 
   def verify_user(user_email)
