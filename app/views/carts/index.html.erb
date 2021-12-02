@@ -18,12 +18,16 @@
             <h6 class="card-subtitle mb-2 text-muted"><%= cart[:location]%></h6>
           </div>
           <ul class="list-group list-group-flush">
-            <li class="list-group-item">Payment Options: <%= cart[:payment_options] %></li>
+            <% if cart[:payment_options] != "NA" %>
+              <li class="list-group-item">Payment Options: <%= cart[:payment_options] %></li>
+            <% end %>
             <li class="list-group-item">
               Opens: <%= cart[:opening_time] %>
               and Closes: <%= cart[:closing_time] %>
             </li>
-            <li class="list-group-item">Signature Dish: <%= cart[:top_rated_food] %></li>
+            <% if !cart[:top_rated_food].empty? %>
+              <li class="list-group-item">Signature Dish: <%= cart[:top_rated_food] %></li>              
+            <% end %>
             <li class="list-group-item">Rating: <%= cart[:rating] %></li>
 
           </ul>

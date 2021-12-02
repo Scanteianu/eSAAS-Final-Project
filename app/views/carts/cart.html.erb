@@ -9,24 +9,30 @@
 <br>
 <b>Open on Days:</b> <%= @currentCart[:openOnDays]%>
 <br>
-<b>Payment options:</b>
-<ul class="payment-options">
-<% @currentCart[:paymentOptions].each do |option| %>
-  <li>
-    <% if option.downcase == 'card' %>
-      <i class="bi bi-credit-card"></i>
-    <% elsif option.downcase == 'cash' %>
-      <i class="bi bi-cash"></i>
-    <% else %>
-      <%= image_tag "venmo.svg", class: "venmo", alt: "Venmo payment" %>
-    <% end %>
-    <%= option %>
-  </li>
+<% if @currentCart[:paymentOptions] != "NA" %>
+  <b>Payment options:</b>
+  <ul class="payment-options">
+  <% @currentCart[:paymentOptions].each do |option| %>
+    <li>
+      <% if option.downcase == 'card' %>
+        <i class="bi bi-credit-card"></i>
+      <% elsif option.downcase == 'cash' %>
+        <i class="bi bi-cash"></i>
+      <% else %>
+        <%= image_tag "venmo.svg", class: "venmo", alt: "Venmo payment" %>
+      <% end %>
+      <%= option %>
+    </li>
+  <% end %>
+  </ul>
 <% end %>
-</ul>
-<b>Owner:</b> <%= @currentCart[:owner] %>
+<% if @currentCart[:owner] != 'NA' %>
+  <b>Owner:</b> <%= @currentCart[:owner] %>
+<% end %>
 <br>
-<b>Top rated food:</b> <%= @currentCart[:topRatedFood] %>
+<% if !@currentCart[:topRatedFood].empty? %>
+  <b>Top rated food:</b> <%= @currentCart[:topRatedFood] %>
+<% end %>
 <br>
 <div>
   <%= link_to 'Edit Cart Details', edit_cart_path, :class => 'btn btn-primary mt-3' %>
