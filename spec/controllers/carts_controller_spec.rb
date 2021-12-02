@@ -128,6 +128,20 @@ describe CartsController, type: :controller do
     end
   end
 
+  describe "listifyPaymentOptions" do
+    context 'if paymentOptStr is "NA"' do
+      it 'returns "NA"' do
+        expect(@controller.listifyPaymentOptions("NA")).to eq("NA")
+      end
+    end
+    
+    context 'if paymentOptStr is not "NA"' do
+      it 'returns a list of payment options' do
+        expect(@controller.listifyPaymentOptions("Venmo, Cash")).to eq(["Venmo", "Cash"])
+      end
+    end
+  end
+
   describe "add_review" do
     before(:each) do
       default_opening_time = DateTime.parse('9:30:00').strftime("%I:%M %p")
@@ -160,6 +174,7 @@ describe CartsController, type: :controller do
       expected_review_hash[:email_id] = @test_user[:email_id]
       expected_review_hash[:food_cart_id] = @test_food_cart[:id].to_s
       expected_review_hash[:hasReadWriteAccess] = true
+      expected_review_hash[:is_verified] = true
       expected_review_hash[:id] = 1
       expected_review_hash[:rating] = review_rating
       expected_review_hash[:review] = review_text
@@ -178,32 +193,6 @@ describe CartsController, type: :controller do
       post :add_review, params: { cart_id: @test_food_cart[:id], id: 1, initial_cart_review: { review: 'review text', rating: 1 } }
 
       expect(response).to redirect_to(cart_path(1))
-    end
-  end
-
-  describe "verify_user" do
-
-    context "user email is nil" do
-      it "return false" do
-        value=@controller.verify_user(nil)
-        expect(value).to eq(false)
-      end
-    end
-    context "user email is not nil" do
-      context "user email includes columbia.edu or barnard.edu" do
-        it "returns true" do
-          value1=@controller.verify_user("test1@columbia.edu")
-          expect(value1).to eq(true)
-          value2=@controller.verify_user("test1@barnard.edu")
-          expect(value2).to eq(true)
-        end
-      end
-      context "user email does not include columbia.edu or barnard.edu" do
-        it "returns false" do
-          value=@controller.verify_user("test1@gmail.com")
-          expect(value).to eq(false)
-        end
-      end
     end
   end
 
@@ -239,6 +228,7 @@ describe CartsController, type: :controller do
       expected_review_hash = Hash.new
       expected_review_hash[:email_id] = @test_user[:email_id]
       expected_review_hash[:hasReadWriteAccess] = true
+      expected_review_hash[:is_verified] = true
       expected_review_hash[:id] = 1
       expected_review_hash[:rating] = review_rating
       expected_review_hash[:review] = review_text
@@ -273,9 +263,9 @@ describe CartsController, type: :controller do
 
     it "should not delete the review without login" do
       # food cart id must match one currently in DB
-      expect {
+      expect {          
           post :delete_review, params: { cart_id: @test_food_cart[:id], id: @test_review[:id], edit_cart_review: { review: 'the food was meh...', rating: 2 } }
-      }.to raise_error(Exception)
+      }.to raise_error(StandardError)
     end
 
     it "should set deleted review Id successfully with login" do

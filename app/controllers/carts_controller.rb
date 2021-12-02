@@ -121,6 +121,7 @@ class CartsController < ApplicationController
     review_hash[:username] = user[:name]
     review_hash[:email_id] = user[:email_id]
     review_hash[:hasReadWriteAccess] = user[:email_id] == session_username
+    review_hash[:is_verified] = verify_user(user[:email_id])
     @review_to_display = review_hash
 
     respond_to do |format|
@@ -150,6 +151,7 @@ class CartsController < ApplicationController
     review_hash[:hasReadWriteAccess] = user[:email_id] == session_username
     review_hash[:rating] = edit_review_params[:rating]
     review_hash[:review] = edit_review_params[:review]
+    review_hash[:is_verified] = verify_user(user[:email_id])
     @updated_review = review_hash
 
     respond_to do |format|
@@ -167,10 +169,11 @@ class CartsController < ApplicationController
         @deleted_review_cart = FoodCart.find_by_id(found_review[:food_cart_id])
         User.delete_review(params[:id])
       else
-        raise Exception.new "Logged in user can only delete their own review"
+        raise StandardError.new "Logged in user can only delete their own review"
       end
-    rescue => exception
-      puts exception
+    rescue StandardError => exception
+      puts exception.message
+      raise
     end
 
     respond_to do |format|
@@ -259,19 +262,6 @@ class CartsController < ApplicationController
 
   def listifyPaymentOptions(paymentOptStr)
     return paymentOptStr == "NA" ? paymentOptStr : paymentOptStr.split(", ")
-  end
-
-  def verify_user(user_email)
-    #check if it has columbia.edu or barnard.edu
-    if user_email.nil?
-      return false
-    else
-      if user_email.include? "columbia.edu" or user_email.include? "barnard.edu"
-        return true
-      else
-        return false
-      end
-    end
   end
 
   def get_rating(cartIndex)
