@@ -8,10 +8,10 @@ class CartsController < ApplicationController
       foodCartHash[:id] = foodCart[:id]
       foodCartHash[:name] = foodCart[:name]
       foodCartHash[:location] = foodCart[:location]
-      foodCartHash[:opening_time] = Time.parse(foodCart[:opening_time].to_s()).in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p") rescue nil
-      foodCartHash[:closing_time] = Time.parse(foodCart[:closing_time].to_s()).in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p") rescue nil
+      foodCartHash[:opening_time] = Time.parse(foodCart[:opening_time].to_s()).in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p") rescue "NA"
+      foodCartHash[:closing_time] = Time.parse(foodCart[:closing_time].to_s()).in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p") rescue "NA"
       foodCartHash[:payment_options] = foodCart[:payment_options]
-      foodCartHash[:top_rated_food] = foodCart[:top_rated_food]
+      foodCartHash[:top_rated_food] = foodCart[:top_rated_food].empty? ? "NA" : foodCart[:top_rated_food]
       foodCartHash[:coordinates] = foodCart[:coordinates]
       foodCartHash[:rating] = get_rating(foodCart[:id])
       cartsArray.push(foodCartHash)
@@ -55,15 +55,15 @@ class CartsController < ApplicationController
     cartToDisplay[:coordinates] = cartFromDb[:coordinates]
     cartToDisplay[:owner] = User.find_by_id(cartFromDb[:user_id])[:name] rescue "NA"
     cartToDisplay[:paymentOptions] = listifyPaymentOptions(cartFromDb[:payment_options])
-    cartToDisplay[:topRatedFood]= cartFromDb[:top_rated_food]
+    cartToDisplay[:topRatedFood]= cartFromDb[:top_rated_food].empty? ? "NA" : cartFromDb[:top_rated_food]
     cartToDisplay[:openOnDays] = cartFromDb[:open_on_days]
     if cartFromDb.image.attached?
       cartToDisplay[:image] = cartFromDb.image.variant(resize: "320x320")
     end
 
     # Convert UTC time to eastern time
-    parsed_open_time = Time.parse(cartFromDb[:opening_time].to_s()) rescue ""
-    parsed_close_time = Time.parse(cartFromDb[:closing_time].to_s()) rescue ""
+    parsed_open_time = Time.parse(cartFromDb[:opening_time].to_s()) rescue "NA"
+    parsed_close_time = Time.parse(cartFromDb[:closing_time].to_s()) rescue "NA"
     cartToDisplay[:openHours] = parsed_open_time.in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p") rescue "NA"
     cartToDisplay[:closeHours] = parsed_close_time.in_time_zone('Eastern Time (US & Canada)').strftime("%I:%M%p") rescue "NA"
     @currentCart=cartToDisplay

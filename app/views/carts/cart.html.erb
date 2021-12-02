@@ -21,9 +21,11 @@
   <b>Open on Days:</b> <%= @currentCart[:openOnDays] %>
   <br>
 <% end %>
-
-<% if @currentCart[:paymentOptions] != "NA" %>
-  <b>Payment options:</b>
+<b>Payment options:</b>
+<% if @currentCart[:paymentOptions] == "NA" %>
+  <%= @currentCart[:paymentOptions] %>
+  <br>
+<% elsif @currentCart[:paymentOptions] != "NA" %>
   <ul class="payment-options">
   <% @currentCart[:paymentOptions].each do |option| %>
     <li>
@@ -40,15 +42,11 @@
   </ul>
 <% end %>
 
-<% if @currentCart[:owner] != 'NA' %>
-  <b>Owner:</b> <%= @currentCart[:owner] %>
-    <br>
-<% end %>
+<b>Owner:</b> <%= @currentCart[:owner] %>
+<br>
 
-<% if !@currentCart[:topRatedFood].empty? %>
-  <b>Top rated food:</b> <%= @currentCart[:topRatedFood] %>
-    <br>
-<% end %>
+<b>Top rated food:</b> <%= @currentCart[:topRatedFood] %>
+<br>
 
 <div>
   <%= link_to 'Edit Cart Details', edit_cart_path, :class => 'btn btn-primary mt-3' %>
