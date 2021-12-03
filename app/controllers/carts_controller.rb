@@ -227,8 +227,8 @@ class CartsController < ApplicationController
       return
     end
     cart_to_create = cart_params.clone
-    cart_to_create[:opening_time] = Time.parse(cart_params[:opening_time]) rescue nil
-    cart_to_create[:closing_time] = Time.parse(cart_params[:closing_time]) rescue nil
+    cart_to_create[:opening_time] = Time.parse(cart_params[:opening_time]).asctime.in_time_zone("Eastern Time (US & Canada)") rescue nil
+    cart_to_create[:closing_time] = Time.parse(cart_params[:closing_time]).asctime.in_time_zone("Eastern Time (US & Canada)") rescue nil
     cart_to_create[:payment_options] = cart_params[:payment_options].keys.join(', ') rescue "NA"
     cart_to_create[:open_on_days] = cart_params[:open_on_days].keys.join(', ') rescue "NA"
     if cart_params[:is_owner] != nil
@@ -252,8 +252,8 @@ class CartsController < ApplicationController
     new_values[:name] = cart_params[:name]
     new_values[:location] = cart_params[:location]
     new_values[:coordinates] = cart_params[:coordinates]
-    new_values[:opening_time] = Time.parse(cart_params[:opening_time]) rescue nil
-    new_values[:closing_time] = Time.parse(cart_params[:closing_time]) rescue nil
+    new_values[:opening_time] = Time.parse(cart_params[:opening_time]).asctime.in_time_zone("Eastern Time (US & Canada)") rescue nil
+    new_values[:closing_time] = Time.parse(cart_params[:closing_time]).asctime.in_time_zone("Eastern Time (US & Canada)") rescue nil
     new_values[:top_rated_food] = cart_params[:top_rated_food]
     new_values[:payment_options] = cart_params[:payment_options].keys.join(', ') rescue "NA"
     new_values[:open_on_days] = cart_params[:open_on_days].keys.join(', ') rescue "NA"
