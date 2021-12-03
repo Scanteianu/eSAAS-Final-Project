@@ -36,6 +36,14 @@
   <%= label_tag "cart[is_owner]", 'Do you own this cart?', class: 'form-check-label is-owner' %>
   <%= check_box_tag "cart[is_owner]", "1", @is_owner, class: 'form-check-input' %>
   <br/>
+
+  <% if @display_delete %>
+    <br/>
+    <%= label_tag "cart[delete_cart]", 'Delete this cart?', class: 'form-check-label is-owner' %>
+    <%= check_box_tag "cart[delete_cart]", "1", false, class: 'form-check-input' %>
+    <br/>
+  <% end %>
+  <br/>
   <%= submit_tag 'Save Changes', :class => 'btn btn-primary' %>
   <%= link_to 'Cancel', root_path, :class => 'btn btn-secondary' %>
 <% end %>

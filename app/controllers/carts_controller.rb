@@ -1,5 +1,5 @@
 class CartsController < ApplicationController
-
+  
   def index
     cartsArray = Array.new
     foodCarts = FoodCart.all
@@ -196,6 +196,7 @@ class CartsController < ApplicationController
   end
 
   def edit
+    website_owners = ["as6178@columbia.edu", "ww2623@columbia.edu", "dms2301@columbia.edu", "ps3072@columbia.edu"]
     session_username = getFromSessionObject(:username)
     if session_username == nil
       flash[:notice] = "User must login to edit a cart"
@@ -214,6 +215,12 @@ class CartsController < ApplicationController
       @is_owner = true
     else
       @is_owner = false
+    end
+
+    if website_owners.include?(session_username)
+      @display_delete = true
+    else
+      @display_delete = false
     end
     #if open days added to schema, uncomment below line
     # @open_on_days = @cart.open_on.split(", ")
@@ -248,6 +255,12 @@ class CartsController < ApplicationController
       return
     end
     @cart = FoodCart.find params[:id]
+    if !cart_params[:delete_cart].nil?
+      FoodCart.destroy(params[:id])
+      flash[:notice] = "#{@cart.name} was permanently deleted."
+      redirect_to root_path
+      return
+    end
     new_values = Hash.new
     new_values[:name] = cart_params[:name]
     new_values[:location] = cart_params[:location]
@@ -305,7 +318,7 @@ class CartsController < ApplicationController
   end
 
   def cart_params
-    params.require(:cart).permit(:name, :location, :coordinates, :menu, :image, :opening_time, :closing_time, :top_rated_food , :is_owner, payment_options:{}, open_on_days:{})
+    params.require(:cart).permit(:name, :location, :coordinates, :menu, :image, :opening_time, :closing_time, :top_rated_food , :is_owner, :delete_cart, payment_options:{}, open_on_days:{})
     # params.require(:cart).permit(:name, :location, :menu, :opening_time, :closing_time, :top_rated_food, payment_options:{}, open_on_days:{}, :coordinates)
   end
 
