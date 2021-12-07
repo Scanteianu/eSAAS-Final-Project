@@ -58,7 +58,10 @@ class CartsController < ApplicationController
     cartToDisplay[:topRatedFood]= cartFromDb[:top_rated_food].empty? ? "NA" : cartFromDb[:top_rated_food]
     cartToDisplay[:openOnDays] = cartFromDb[:open_on_days]
     if cartFromDb.image.attached?
-      cartToDisplay[:image] = cartFromDb.image.variant(resize: "320x320")
+      pic = cartFromDb.image
+      variant = pic.variant(resize: "320x320")
+      pic.service.delete(variant.key)
+      cartToDisplay[:image] = cartFromDb.image.variant(resize: "320x320").processed
     end
 
     # Convert UTC time to eastern time
