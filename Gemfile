@@ -5,6 +5,7 @@ gem 'rails', '~> 5.2.0'
 gem 'pg', '~> 0.18'
 gem 'mini_magick'
 gem 'bootsnap'
+gem 'aws-sdk-s3'
 
 # for Heroku deployment
 group :development, :test do
