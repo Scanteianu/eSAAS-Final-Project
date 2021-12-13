@@ -1,62 +1,69 @@
-<h2><%= @currentCart[:name]%></h2>
-<% if !@currentCart[:image].nil? %>
-  <%= image_tag @currentCart[:image]%>
-  <br>
-<% end %>
-
-<b>Location:</b> <%= @currentCart[:location]%>
-<br>
-
-<% if @currentCart[:openHours] != "NA" %>
-  <b>Opens:</b> <%= @currentCart[:openHours] %>
-  <br>
-<% end %>
-
-<% if @currentCart[:closeHours] != "NA" %>
-  <b>Closes:</b> <%= @currentCart[:closeHours] %>
-  <br>
-<% end %>
-
-<% if @currentCart[:openOnDays] != "NA" %>
-  <b>Open on Days:</b> <%= @currentCart[:openOnDays] %>
-  <br>
-<% end %>
-<b>Payment options:</b>
-<% if @currentCart[:paymentOptions] == "NA" %>
-  <%= @currentCart[:paymentOptions] %>
-  <br>
-<% elsif @currentCart[:paymentOptions] != "NA" %>
-  <ul class="payment-options">
-  <% @currentCart[:paymentOptions].each do |option| %>
-    <li>
-      <% if option.downcase == 'card' %>
-        <i class="bi bi-credit-card"></i>
-      <% elsif option.downcase == 'cash' %>
-        <i class="bi bi-cash"></i>
-      <% else %>
-        <%= image_tag "venmo.svg", class: "venmo", alt: "Venmo payment" %>
-      <% end %>
-      <%= option %>
-    </li>
-  <% end %>
-  </ul>
-<% end %>
-
-<b>Owner:</b> <%= @currentCart[:owner] %>
-<br>
-
-<b>Top rated food:</b> <%= @currentCart[:topRatedFood] %>
-<br>
-
-<div>
-  <%= link_to 'Edit Cart Details', edit_cart_path, :class => 'btn btn-primary mt-3' %>
-</div>
-<Section class="review-section">
-  <h4 class="review-heading">Reviews</h4>
-  <%= render "initial_cart_review", currentCart: @currentCart, reviewEnabled: @reviewEnabled, hasUserWrittenReview: @hasUserWrittenReview %>
-  <div class="list-of-reviews">
-    <% @currentReviews.each do |review| %>
-      <%= render "cart_review", review: review %>
+<div class="container-xl">
+  <h2><%= @currentCart[:name]%></h2>
+  <div class="row">
+    <% if !@currentCart[:image].nil? %>
+      <div class="col-auto">
+        <%= image_tag @currentCart[:image]%>
+      </div>
     <% end %>
+    <div class="col-auto">
+      <div>
+        <b>Location:</b> <%= @currentCart[:location]%>
+        <br>
+
+        <% if @currentCart[:openHours] != "NA" %>
+          <b>Opens:</b> <%= @currentCart[:openHours] %>
+          <br>
+        <% end %>
+
+        <% if @currentCart[:closeHours] != "NA" %>
+          <b>Closes:</b> <%= @currentCart[:closeHours] %>
+          <br>
+        <% end %>
+
+        <% if @currentCart[:openOnDays] != "NA" %>
+          <b>Open on Days:</b> <%= @currentCart[:openOnDays] %>
+          <br>
+        <% end %>
+        <b>Payment options:</b>
+        <% if @currentCart[:paymentOptions] == "NA" %>
+          <%= @currentCart[:paymentOptions] %>
+          <br>
+        <% elsif @currentCart[:paymentOptions] != "NA" %>
+          <ul class="payment-options">
+          <% @currentCart[:paymentOptions].each do |option| %>
+            <li>
+              <% if option.downcase == 'card' %>
+                <i class="bi bi-credit-card"></i>
+              <% elsif option.downcase == 'cash' %>
+                <i class="bi bi-cash"></i>
+              <% else %>
+                <%= image_tag "venmo.svg", class: "venmo", alt: "Venmo payment" %>
+              <% end %>
+              <%= option %>
+            </li>
+          <% end %>
+          </ul>
+        <% end %>
+
+        <b>Owner:</b> <%= @currentCart[:owner] %>
+        <br>
+
+        <b>Top rated food:</b> <%= @currentCart[:topRatedFood] %>
+        <br>
+      </div>
+    </div>
   </div>
-</Section>
+  <div>
+    <%= link_to 'Edit Cart Details', edit_cart_path, :class => 'btn btn-primary mt-3' %>
+  </div>
+  <Section class="review-section">
+    <h4 class="review-heading">Reviews</h4>
+    <%= render "initial_cart_review", currentCart: @currentCart, reviewEnabled: @reviewEnabled, hasUserWrittenReview: @hasUserWrittenReview %>
+    <div class="list-of-reviews">
+      <% @currentReviews.each do |review| %>
+        <%= render "cart_review", review: review %>
+      <% end %>
+    </div>
+  </Section>
+</div>
